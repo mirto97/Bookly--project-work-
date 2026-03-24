@@ -4,11 +4,19 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Entity
 @Table(name = "service")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Service {
 
     @Id
@@ -35,62 +43,6 @@ public class Service {
     @Column(name = "personalized_fields", columnDefinition = "json")
     private Map<String, Object> personalizedFields;
 
-    public Service() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getDurationMinutes() {
-        return durationMinutes;
-    }
-
-    public void setDurationMinutes(Integer durationMinutes) {
-        this.durationMinutes = durationMinutes;
-    }
-
-    public double getPrice() {
-        return price.doubleValue();
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public Map<String, Object> getPersonalizedFields() {
-        return personalizedFields;
-    }
-
-    public void setPersonalizedFields(Map<String, Object> personalizedFields) {
-        this.personalizedFields = personalizedFields;
-    }
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booking> bookings = new ArrayList<>();
 }
