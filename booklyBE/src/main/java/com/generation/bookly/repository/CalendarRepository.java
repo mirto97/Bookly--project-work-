@@ -2,8 +2,8 @@ package com.generation.bookly.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.generation.bookly.model.Calendar;
+import com.generation.bookly.model.Diary;
 
-public interface CalendarRepository extends JpaRepository<Calendar, Integer> {
+public interface CalendarRepository extends JpaRepository<Diary, Integer> {
 
 }

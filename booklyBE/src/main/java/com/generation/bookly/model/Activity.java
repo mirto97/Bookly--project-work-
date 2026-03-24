@@ -42,8 +42,8 @@ public class Activity {
     private LocalDateTime registrationDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Service> services = new ArrayList<>();
+    private List<Service> services;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Calendar> calendars = new ArrayList<>();
+    private List<Diary> calendars;
 }

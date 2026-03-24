@@ -1,8 +1,7 @@
 package com.generation.bookly.model;
 
 import java.time.LocalDate;
-import java.util.Calendar;
-
+import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -29,25 +28,29 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
-    @JoinColumn(name = "calendar_id", unique = true, nullable = false)
-    private Calendar calendar;
+    @ManyToOne
+    @JoinColumn(name = "diary_id", unique = true, nullable = false)
+    private Diary diary;
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
     @ManyToOne
-    @JoinColumn(name = "guest_id", nullable = false)
-    private Guest guest;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.PENDING;
     public enum BookingStatus { PENDING, CONFIRMED, CANCELLED, COMPLETED }
 
-    @NotNull
+    @NotNull(message = "Booking date is required")
     private LocalDate bookingDate = LocalDate.now();
 
     private String note;
+
+    @OneToMany
+    @JoinColumn(name = "booking_id")
+    private List<Review> reviews;
 
 }

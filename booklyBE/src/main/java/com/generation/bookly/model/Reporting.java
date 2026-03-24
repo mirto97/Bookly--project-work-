@@ -23,20 +23,20 @@ public class Reporting
 
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private Guest author;
+    private User author;
 
     @Enumerated(EnumType.STRING)
     private ReportingType type;
     public enum ReportingType { REVIEW, CLIENT, ACTIVITY }
     
-    @NotBlank
+    @NotBlank(message = "Reason is required")
     private String reason;
     
     @Enumerated(EnumType.STRING)
     private ReportingStatus status = ReportingStatus.PENDING;
     public enum ReportingStatus { PENDING, APPROVED, REJECTED }
     
-    @NotNull
+    @NotNull(message = "Created date is required")
     private LocalDateTime createdAt = LocalDateTime.now();
     
 }
