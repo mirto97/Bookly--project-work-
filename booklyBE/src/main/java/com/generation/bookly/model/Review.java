@@ -27,7 +27,6 @@ public class Review {
 
     @Min(1) @Max(5)
     private int rating;
-    private 
 
     @OneToOne
     @JoinColumn(name = "booking_id", unique = true, nullable = false)
