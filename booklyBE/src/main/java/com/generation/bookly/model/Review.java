@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,18 +24,19 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotNull
     private String comment;
 
     @Min(1) @Max(5)
     private int rating;
-    private 
 
     @OneToOne
     @JoinColumn(name = "booking_id", unique = true, nullable = false)
     private Booking booking;
 
     @Enumerated(EnumType.STRING)
-    private StatusReview status = StatusReview.PENDING;
+    private ReviewStatus status = ReviewStatus.PENDING;
 
-    public enum StatusReview { PENDING, APPROVED, REJECTED }
+    public enum ReviewStatus { PENDING, APPROVED, REJECTED }
 }
