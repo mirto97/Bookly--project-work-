@@ -9,9 +9,11 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,10 +41,12 @@ public class Booking {
     private Guest guest;
 
     @Enumerated(EnumType.STRING)
-    private StatusBooking status = StatusBooking.PENDING;
+    private BookingStatus status = BookingStatus.PENDING;
 
+    @NotNull
     private LocalDate bookingDate = LocalDate.now();
+
     private String note;
 
-    public enum StatusBooking { PENDING, CONFIRMED, CANCELLED, COMPLETED }
+    public enum BookingStatus { PENDING, CONFIRMED, CANCELLED, COMPLETED }
 }
