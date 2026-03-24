@@ -19,7 +19,10 @@ public class Guest
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank
     private String firstName;
+
+    @NotBlank
     private String lastName;
     private LocalDate dob;
 

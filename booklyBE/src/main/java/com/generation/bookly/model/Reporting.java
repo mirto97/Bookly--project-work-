@@ -3,6 +3,7 @@ package com.generation.bookly.model;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,15 +24,18 @@ public class Reporting
 
     @Enumerated(EnumType.STRING)
     private ReportingType type;
-
+    public enum ReportingType { REVIEW, CLIENT, ACTIVITY;}
+    
     @Column(name = "reference", nullable = false)
     private int referenceId;
-
+    
     private String reason;
-
+    
     @Enumerated(EnumType.STRING)
     private ReportingStatus status = ReportingStatus.PENDING;
-
+    public enum ReportingStatus { PENDING, APPROVED, REJECTED;}
+    
+    @NotNull
     private LocalDate createdAt;
-
+    
 }

@@ -1,7 +1,6 @@
 package com.generation.bookly.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import jakarta.persistence.Entity;
