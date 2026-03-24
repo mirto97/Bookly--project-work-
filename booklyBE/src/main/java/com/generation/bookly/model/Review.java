@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "review")
 public class Review {
     
     @Id
@@ -26,7 +28,7 @@ public class Review {
     private int id;
 
     @NotNull
-    private String comment;
+    private String content;
 
     @Min(1) @Max(5)
     private int rating;
@@ -37,6 +39,5 @@ public class Review {
 
     @Enumerated(EnumType.STRING)
     private ReviewStatus status = ReviewStatus.PENDING;
-
     public enum ReviewStatus { PENDING, APPROVED, REJECTED }
 }

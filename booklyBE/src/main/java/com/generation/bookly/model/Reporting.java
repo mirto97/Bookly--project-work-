@@ -1,8 +1,10 @@
 package com.generation.bookly.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "reporting")
 public class Reporting 
 {
     @Id
@@ -24,18 +27,16 @@ public class Reporting
 
     @Enumerated(EnumType.STRING)
     private ReportingType type;
-    public enum ReportingType { REVIEW, CLIENT, ACTIVITY;}
+    public enum ReportingType { REVIEW, CLIENT, ACTIVITY }
     
-    @Column(name = "reference", nullable = false)
-    private int referenceId;
-    
+    @NotBlank
     private String reason;
     
     @Enumerated(EnumType.STRING)
     private ReportingStatus status = ReportingStatus.PENDING;
-    public enum ReportingStatus { PENDING, APPROVED, REJECTED;}
+    public enum ReportingStatus { PENDING, APPROVED, REJECTED }
     
     @NotNull
-    private LocalDate createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
     
 }

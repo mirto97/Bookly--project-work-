@@ -4,11 +4,9 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import com.generation.bookly.model.Calendar;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.generation.bookly.model.Service;
 
 @Entity
 @Table(name = "activity")
@@ -30,16 +28,18 @@ public class Activity {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
     private TypeStatus type;
+    public enum TypeStatus { PUBLIC, PRIVATE}
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private ActivityStatus status;
+    public enum ActivityStatus { APPROVED, PENDING, REFUSED, BANNED }
 
     @Column(name = "companyEmail", length = 255)
     private String companyEmail;
 
     @Column(name = "Registration_date", nullable = false)
-    private LocalDateTime registrationDate;
+    private LocalDateTime registrationDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Service> services = new ArrayList<>();

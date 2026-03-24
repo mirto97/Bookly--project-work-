@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "booking")
 public class Booking {
     
     @Id
@@ -41,11 +43,11 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.PENDING;
+    public enum BookingStatus { PENDING, CONFIRMED, CANCELLED, COMPLETED }
 
     @NotNull
     private LocalDate bookingDate = LocalDate.now();
 
     private String note;
 
-    public enum BookingStatus { PENDING, CONFIRMED, CANCELLED, COMPLETED }
 }

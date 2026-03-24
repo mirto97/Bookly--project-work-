@@ -23,7 +23,7 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
 
@@ -36,8 +36,8 @@ public class Service {
     @Column(name = "duration_minutes")
     private Integer durationMinutes;
 
-    @Column(name = "price", precision = 10, scale = 2)
-    private double price;
+    @Column(name = "price")
+    private int price;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "personalized_fields", columnDefinition = "json")
