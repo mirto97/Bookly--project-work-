@@ -1,0 +1,48 @@
+package com.generation.bookly.model;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Booking {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @OneToOne
+    @JoinColumn(name = "calendar_id", unique = true, nullable = false)
+    private Calendar calendar;
+
+    @ManyToOne
+    @JoinColumn(name = "service_id", nullable = false)
+    private Service service;
+
+    @ManyToOne
+    @JoinColumn(name = "guest_id", nullable = false)
+    private Guest guest;
+
+    @Enumerated(EnumType.STRING)
+    private StatusBooking status = StatusBooking.PENDING;
+
+    private LocalDate bookingDate = LocalDate.now();
+    private String note;
+
+    public enum StatusBooking { PENDING, CONFIRMED, CANCELLED, COMPLETED }
+}
