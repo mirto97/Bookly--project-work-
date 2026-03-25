@@ -65,6 +65,6 @@ public class ActivityService {
         }
         
         // Cerchiamo tutti gli appuntamenti legati a questa attività
-        return bookingRepository.findByActivityId(activityId);
+        return bookingRepository.findByServiceActivityId(activityId);
     }
 }
