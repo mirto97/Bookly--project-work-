@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
@@ -27,15 +28,20 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
+    @NotNull(message = "Content is required")
     private String content;
 
     @Min(1) @Max(5)
     private int rating;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "booking_id", unique = true, nullable = false)
     private Booking booking;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User author;
+    // abbiamo detto che può anche essere null
 
     @Enumerated(EnumType.STRING)
     private ReviewStatus status = ReviewStatus.PENDING;

@@ -1,7 +1,11 @@
 package com.generation.bookly.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GuestDTO 
-{
+public class UserDTO {
+
     private int id;
 
     @NotBlank(message = "First name is required")
@@ -27,8 +31,16 @@ public class GuestDTO
     @NotNull(message = "Email is required")
     private String email;
 
-    @NotNull(message = "ReportingsReceived is required")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "Password is required")
+    private String password;
+
+    @NotNull(message = "Role is required")
+    private String role;
+
+    @Min(value = 0, message = "Reportings received cannot be negative")
     private int reportingsReceived;
 
-    // private String password;
+    private List<ReviewDTO> reviews;
+    
 }

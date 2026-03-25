@@ -1,16 +1,11 @@
 package com.generation.bookly.model;    
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "service")
@@ -34,15 +29,20 @@ public class Service {
     private String description;
 
     @Column(name = "duration_minutes")
-    private Integer durationMinutes;
+    @Min(value=0, message="Duration cannot be negative")
+    private int duration;
 
     @Column(name = "price")
+    @Min(value=0, message="Price cannot be negative")
     private int price;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "personalized_fields", columnDefinition = "json")
-    private Map<String, Object> personalizedFields;
+    // meglio non complicarci la vita ora
+    // @JdbcTypeCode(SqlTypes.JSON)
+    // @Column(name = "personalized_fields", columnDefinition = "json")
+    // private Map<String, Object> personalizedFields;
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Booking> bookings = new ArrayList<>();
+    private List<Booking> bookings;
+
+    private String notes;
 }
