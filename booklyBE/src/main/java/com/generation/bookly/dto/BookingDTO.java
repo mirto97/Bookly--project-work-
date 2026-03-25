@@ -16,8 +16,8 @@ public class BookingDTO {
     
     private int id;
 
-    @NotNull(message = "Calendar ID is required")
-    private int calendarId;
+    @NotNull(message = "Diary ID is required")
+    private int diaryId;
 
     @NotNull(message = "Guest ID is required")
     private int guestId;

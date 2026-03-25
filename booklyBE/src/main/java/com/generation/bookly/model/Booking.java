@@ -2,6 +2,8 @@ package com.generation.bookly.model;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,7 +31,7 @@ public class Booking {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "diary_id", unique = true, nullable = false)
+    @JoinColumn(name = "diary_id", nullable = false)
     private Diary diary;
 
     @ManyToOne
@@ -49,8 +51,7 @@ public class Booking {
 
     private String note;
 
-    @OneToMany
-    @JoinColumn(name = "booking_id")
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
 }
