@@ -1,55 +1,78 @@
 package com.generation.bookly.API;
 
-import com.generation.bookly.model.Service;
-import com.generation.bookly.service.ServiceService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.generation.bookly.dto.ServiceDTO;
+import com.generation.bookly.mapper.ServiceMapper;
+import com.generation.bookly.model.Service;
+import com.generation.bookly.service.ServiceService;
 
 @RestController
 @RequestMapping("/api/services")
-@CrossOrigin(origins = "http://localhost:4200") // Utile per collegare il frontend senza errori CORS
+@CrossOrigin(origins = "http://localhost:4200")
 public class ServiceAPI {
 
     @Autowired
     private ServiceService serviceService;
 
-    // 1. Ottieni tutti i servizi
+    @Autowired
+    private ServiceMapper serviceMapper;
+
+    // 1. Ottieni tutti i servizi (Mappati a DTO)
     @GetMapping
-    public ResponseEntity<List<Service>> getAllServices() {
-        return new ResponseEntity<>(serviceService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ServiceDTO>> getAllServices() {
+        List<ServiceDTO> dtos = serviceService.findAll()
+                .stream()
+                .map(serviceMapper::toDTO) // Assumendo un costruttore che accetta l'Entity
+                .toList();
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    // 2. Ottieni i servizi di una specifica attività
+    // 2. Ottieni per attività
     @GetMapping("/activity/{activityId}")
-    public ResponseEntity<List<Service>> getServicesByActivity(@PathVariable int activityId) {
-        return new ResponseEntity<>(serviceService.findByActivityId(activityId), HttpStatus.OK);
+    public ResponseEntity<List<ServiceDTO>> getServicesByActivity(@PathVariable int activityId) {
+        List<ServiceDTO> dtos = serviceService.findByActivityId(activityId)
+                .stream()
+                .map(serviceMapper::toDTO)
+                .toList();
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    // 3. Ottieni un singolo servizio per ID
+    // 3. Ottieni singolo (Mappato a DTO)
     @GetMapping("/{id}")
-    public ResponseEntity<Service> getServiceById(@PathVariable int id) {
+    public ResponseEntity<ServiceDTO> getServiceById(@PathVariable int id) {
         Service s = serviceService.findById(id);
         if (s == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(s, HttpStatus.OK);
+        ServiceDTO dto = serviceMapper.toDTO(s);
+        return new ResponseEntity<ServiceDTO>(dto, HttpStatus.OK);
     }
 
-    // 4. Crea un nuovo servizio
+    // 4. Crea un nuovo servizio (Riceve DTO o Entity, restituisce DTO)
     @PostMapping
-    public ResponseEntity<Service> createService(@RequestBody Service service) {
+    public ResponseEntity<ServiceDTO> createService(@RequestBody Service service) {
         try {
-            return new ResponseEntity<>(serviceService.save(service), HttpStatus.CREATED);
+            Service saved = serviceService.save(service);
+            ServiceDTO dto = serviceMapper.toDTO(saved);
+            return new ResponseEntity<ServiceDTO>(dto, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    // 5. Elimina un servizio
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteService(@PathVariable int id) {
         serviceService.deleteById(id);
