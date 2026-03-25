@@ -20,7 +20,7 @@ import com.generation.bookly.model.Service;
 import com.generation.bookly.service.ServiceService;
 
 @RestController
-@RequestMapping("/api/services")
+@RequestMapping("/bookly/api/services")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ServiceAPI {
 
