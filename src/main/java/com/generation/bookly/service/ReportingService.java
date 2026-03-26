@@ -1,4 +1,5 @@
-package com.generation.bookly.service;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -13,65 +14,59 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ReportingService 
-{
+@Transactional
+public class ReportingService {
 
     private final ReportingRepository reportingRepository;
     private final ReportingMapper reportingMapper;
 
-    @Transactional
-    public ReportingDTO createReport(ReportingDTO dto) 
-    {
-        Reporting report = reportingMapper.toEntity(dto);
-        report.setStatus(Reporting.ReportingStatus.PENDING);
-        
-        Reporting saved = reportingRepository.save(report);
-
-        // Se la segnalazione è contro un utente (tipo CLIENT), 
-        // potremmo già incrementare il counter o farlo solo dopo l'approvazione admin
-        return reportingMapper.toDTO(saved);
+    // CREATE
+    public ReportingDTO createReport(ReportingDTO dto) {
+        Reporting reporting = reportingMapper.toEntity(dto);
+        reporting.setStatus(Reporting.ReportingStatus.PENDING);
+        reporting.setCreatedAt(LocalDateTime.now());
+        return reportingMapper.toDTO(reportingRepository.save(reporting));
     }
 
-    @Transactional
-    public void resolveReport(int reportId, Reporting.ReportingStatus status) 
-    {
-        Reporting report = reportingRepository.findById(reportId)
-                .orElseThrow(() -> new EntityNotFoundException("Segnalazione non trovata"));
-        
-        report.setStatus(status);
-        
-        // Se l'admin approva il report, incrementiamo i report ricevuti dall'autore della violazione
-        if(status == Reporting.ReportingStatus.APPROVED && report.getType() == Reporting.ReportingType.CLIENT) 
-        {
-             // Nota: qui servirebbe l'ID dell'utente segnalato (il target)
-             // userService.incrementReports(targetUserId);
-        }
-        
-        reportingRepository.save(report);
+    // READ ALL
+    public List<ReportingDTO> findAll() {
+        return reportingRepository.findAll().stream()
+                .map(reportingMapper::toDTO)
+                .toList();
     }
 
-    @Transactional
-    public void resolveReport(int reportId, String status) 
-    {
-        // 1. Trova la segnalazione
-        Reporting report = reportingRepository.findById(reportId)
-                .orElseThrow(() -> new EntityNotFoundException("Segnalazione non trovata"));
+    // READ BY STATUS
+    public List<ReportingDTO> findAllByStatus(String status) {
+        Reporting.ReportingStatus s = Reporting.ReportingStatus.valueOf(status.toUpperCase());
+        return reportingRepository.findByStatus(s).stream()
+                .map(reportingMapper::toDTO)
+                .toList();
+    }
 
-        // 2. Converte la stringa in Enum (es. "APPROVED" -> ReportingStatus.APPROVED)
-        try 
-        {
-            Reporting.ReportingStatus newStatus = Reporting.ReportingStatus.valueOf(status.toUpperCase());
-            report.setStatus(newStatus);
-            
-            // 3. Se approvato e riguarda un utente, potresti agire qui
-            // (es. bloccare l'utente o mandare una mail)
-            
-            reportingRepository.save(report);
-        } 
-        catch (IllegalArgumentException e) 
-        {
-            throw new RuntimeException("Status non valido: " + status);
+    // READ BY ID
+    public ReportingDTO findById(int id) {
+        Reporting report = reportingRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Segnalazione non trovata con ID: " + id));
+        return reportingMapper.toDTO(report);
+    }
+
+    // UPDATE (Resolve)
+    public void resolveReport(int id, String status) {
+        Reporting report = reportingRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Segnalazione non trovata"));
+        
+        Reporting.ReportingStatus newStatus = Reporting.ReportingStatus.valueOf(status.toUpperCase());
+        report.setStatus(newStatus);
+        
+        // Logica extra: se approvata, potresti voler triggerare azioni sull'entità segnalata
+        // (es. bannare l'utente o nascondere la recensione)
+    }
+
+    // DELETE
+    public void deleteReport(int id) {
+        if (!reportingRepository.existsById(id)) {
+            throw new EntityNotFoundException("Impossibile eliminare: segnalazione non trovata");
         }
-        reportingRepository.deleteById(reportId);
+        reportingRepository.deleteById(id);
     }
 }
