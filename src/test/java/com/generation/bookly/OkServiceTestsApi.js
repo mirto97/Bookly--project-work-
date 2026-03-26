@@ -25,21 +25,24 @@ class Test {
     run(){
         console.log("Running "+this.testname);
 
+        const resolvedApiUrl = (typeof this.apiurl === "function") ? this.apiurl() : this.apiurl;
+        const resolvedBody = (typeof this.body === "function") ? this.body() : this.body;
+
         let options = {
             method: this.verb,
             headers: { 'Content-Type': 'application/json'}
         };
 
         // le request get non hanno body
-        if (this.body && this.verb !== 'GET') {
-            options.body = JSON.stringify(this.body);
+        if (resolvedBody && this.verb !== 'GET') {
+            options.body = JSON.stringify(resolvedBody);
         }
 
-        fetch(this.apiurl, options)
+        return fetch(resolvedApiUrl, options)
         .then(response=>
         {
             if(response.status!==this.status)
-                throw new Error("Status mismatch, expected "+this.status+" got "+response.status+" ("+this.apiurl+")");
+                throw new Error("Status mismatch, expected "+this.status+" got "+response.status+" ("+resolvedApiUrl+")");
 
             if (response.status === 204 || response.status === 404) {
                 // no body expected per API / 404 test
@@ -62,40 +65,10 @@ class Test {
 }
 
 const BASE = "http://localhost:8080/bookly/api/services";
+let createdServiceId = null;
 
 let tests = [];
-
-// 1. Get all services
-tests.push(new Test(
-    "Get all services",
-    BASE,
-    "GET",
-    null,
-    200,
-    json => Array.isArray(json)
-));
-
-// 2. Get services by activity id (assume activity 1 exists)
-tests.push(new Test(
-    "Get services by activity 1",
-    `${BASE}/activity/1`,
-    "GET",
-    null,
-    200,
-    json => Array.isArray(json)
-));
-
-// 3. Get service by id 1 (assume exists)
-tests.push(new Test(
-    "Get service by id 1",
-    `${BASE}/1`,
-    "GET",
-    null,
-    200,
-    json => json && json.id === 1
-));
-
-// 4. Create a new service (requires activity payload, adjust activity.id se necessario)
+// 1. Create a new service (requires activity payload, adjust activity.id se necessario)
 const newServiceBody = {
     activity: { id: 1 },
     name: "Test Service API",
@@ -111,13 +84,50 @@ tests.push(new Test(
     "POST",
     newServiceBody,
     200,
-    json => json && json.id && json.name === "Test Service API"
+    json => {
+        if (!(json && json.id && json.name === "Test Service API")) {
+            return false;
+        }
+        createdServiceId = json.id;
+        return true;
+    }
+));
+// 2. Get all services
+tests.push(new Test(
+    "Get all services",
+    BASE,
+    "GET",
+    null,
+    200,
+    json => Array.isArray(json)
 ));
 
-// 5. Delete service by id 1 (se esistenza garantita, cambia id se necessario)
+// 3. Get services by activity id (assume activity 1 exists)
 tests.push(new Test(
-    "Delete service by id 1",
-    `${BASE}/1`,
+    "Get services by activity 1",
+    `${BASE}/activity/1`,
+    "GET",
+    null,
+    200,
+    json => Array.isArray(json)
+));
+
+// 4. Get created service by id
+tests.push(new Test(
+    "Get created service by id",
+    () => `${BASE}/${createdServiceId}`,
+    "GET",
+    null,
+    200,
+    json => json && json.id === createdServiceId
+));
+
+
+
+// 5. Delete created service by id
+tests.push(new Test(
+    "Delete created service by id",
+    () => `${BASE}/${createdServiceId}`,
     "DELETE",
     null,
     204,
@@ -125,19 +135,10 @@ tests.push(new Test(
 ));
 
 function runAll() {
-    return new Promise((resolve) => {
-        let index = 0;
-        function runNext() {
-            if (index >= tests.length) {
-                resolve();
-                return;
-            }
-            tests[index].run();
-            index++;
-            setTimeout(runNext, 500);
-        }
-        runNext();
-    });
+    return tests.reduce(
+        (promise, test) => promise.then(() => test.run()),
+        Promise.resolve()
+    );
 }
 
 if (typeof require !== 'undefined' && require.main === module) {

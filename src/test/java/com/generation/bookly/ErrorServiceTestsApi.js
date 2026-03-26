@@ -61,7 +61,7 @@ class Test {
     }
 }
 
-const BASE = "http://localhost:8080/api/services";
+const BASE = "http://localhost:8080/bookly/api/services";
 
 let tests = [];
 
