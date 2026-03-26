@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class DiaryDTO 
 {
     
-    private int id;
+    private Integer id;
 
     @NotNull(message = "Date is required")
     private LocalDate date;

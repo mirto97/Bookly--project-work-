@@ -3,7 +3,6 @@ package com.generation.bookly.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.generation.bookly.dto.ActivityDTO;
@@ -42,7 +41,7 @@ public class ActivityService
 
     public List<ActivityDTO> getAllActivityPending() 
     {
-         return activityRepository.findByStatus(Activity.ActivityStatus.PENDING)
+        return activityRepository.findByStatus(Activity.ActivityStatus.PENDING)
                 .stream()
                 .map(activityMapper::toDTO)
                 .collect(Collectors.toList());

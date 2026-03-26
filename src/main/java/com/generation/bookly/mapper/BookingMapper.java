@@ -11,7 +11,10 @@ import com.generation.bookly.model.Booking;
 // "uses" dice a MapStruct quali altri mapper può usare per convertire tipi annidati.
 // Ad esempio UserMapper sa come mappare User ↔ UserDTO, ServiceMapper sa per Service ↔ ServiceDTO.
 // ActivityMapper è incluso perché ServiceMapper lo usa internamente (Service ha un campo Activity).
-@Mapper(componentModel = "spring", uses = {ActivityMapper.class, UserMapper.class, ServiceMapper.class})
+
+// RIMOSSO "uses" che causavano dipendenze circolari. 
+// Poiché mappiamo manualmente gli ID, MapStruct non ha bisogno degli altri mapper qui.
+@Mapper(componentModel = "spring")
 public interface BookingMapper {
 
     // Da DTO → Entity (es. quando riceviamo una richiesta POST/PUT dal client)
