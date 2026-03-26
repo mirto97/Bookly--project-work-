@@ -12,7 +12,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Service {
+public class Service 
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

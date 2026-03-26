@@ -1,6 +1,5 @@
 package com.generation.bookly.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;

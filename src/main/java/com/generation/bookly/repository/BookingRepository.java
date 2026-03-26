@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.generation.bookly.model.Booking;
 
-public interface BookingRepository  extends JpaRepository<Booking, Integer> {
+public interface BookingRepository extends JpaRepository<Booking, Integer> {
+
     List<Booking> findByUserId(int userId);
     List<Booking> findByStatus(Booking.BookingStatus status);
     List<Booking> findByServiceActivityId(int activityId);
