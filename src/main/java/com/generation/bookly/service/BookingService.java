@@ -17,19 +17,22 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class BookingService {
+public class BookingService 
+{
 
     private final BookingRepository bookingRepository;
     private final DiaryRepository diaryRepository;
     private final BookingMapper bookingMapper; // Il tuo mapper MapStruct
 
     @Transactional
-    public BookingDTO createBooking(BookingDTO dto) {
+    public BookingDTO createBooking(BookingDTO dto) 
+    {
         Diary diary = diaryRepository.findById(dto.getDiaryId())
             .orElseThrow(() -> new EntityNotFoundException("Slot non trovato"));
 
         // 2. Controllo disponibilità
-        if (diary.getAvailable() != Diary.Available.AVAILABLE) {
+        if(diary.getAvailable() != Diary.Available.AVAILABLE) 
+        {
             throw new IllegalStateException("Lo slot selezionato non è più disponibile");
         }
 
@@ -45,7 +48,8 @@ public class BookingService {
         return bookingMapper.toDTO(saved);
     }
 
-    public List<BookingDTO> getUserBookings(int userId) {
+    public List<BookingDTO> getUserBookings(int userId) 
+    {
         // Recuperiamo le entità
         List<Booking> entities = bookingRepository.findByUserId(userId);
         

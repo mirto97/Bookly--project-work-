@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDTO {
+public class BookingDTO 
+{
     
     private int id;
 

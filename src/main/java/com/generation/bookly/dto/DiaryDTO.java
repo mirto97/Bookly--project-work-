@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiaryDTO {
+public class DiaryDTO 
+{
     
     private int id;
 

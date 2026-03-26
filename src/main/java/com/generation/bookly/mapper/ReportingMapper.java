@@ -9,7 +9,8 @@ import com.generation.bookly.dto.ReportingDTO;
 import com.generation.bookly.model.Reporting;
 
 @Mapper(componentModel = "spring", uses={UserMapper.class})
-public interface ReportingMapper {
+public interface ReportingMapper 
+{
     
     @Mapping(source = "author.id", target = "authorId")
     ReportingDTO toDTO(Reporting reporting);
