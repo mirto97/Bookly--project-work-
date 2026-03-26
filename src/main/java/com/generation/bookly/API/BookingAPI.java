@@ -12,17 +12,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/bookly/api/bookings")
 @RequiredArgsConstructor
-public class BookingAPI {
+public class BookingAPI 
+{
 
     private final BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<BookingDTO> create(@RequestBody BookingDTO dto) {
+    public ResponseEntity<BookingDTO> create(@RequestBody BookingDTO dto) 
+    {
         return new ResponseEntity<>(bookingService.createBooking(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<BookingDTO>> getByUser(@PathVariable int userId) {
+    public ResponseEntity<List<BookingDTO>> getByUser(@PathVariable int userId) 
+    {
         // Supponendo di avere un metodo findByUser nel Service
         return ResponseEntity.ok(bookingService.getUserBookings(userId));
     }

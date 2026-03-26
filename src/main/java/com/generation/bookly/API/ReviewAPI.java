@@ -11,18 +11,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/bookly/api/reviews")
 @RequiredArgsConstructor
-public class ReviewAPI {
+public class ReviewAPI 
+{
 
     private final ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<ReviewDTO> create(@RequestBody ReviewDTO dto) {
+    public ResponseEntity<ReviewDTO> create(@RequestBody ReviewDTO dto) 
+    {
         return ResponseEntity.ok(reviewService.postReview(dto));
     }
 
     // Tutte le recensioni di un'attività specifica
     @GetMapping("/activity/{activityId}")
-    public ResponseEntity<List<ReviewDTO>> getByActivity(@PathVariable Integer activityId) {
+    public ResponseEntity<List<ReviewDTO>> getByActivity(@PathVariable Integer activityId) 
+    {
         return ResponseEntity.ok(reviewService.getApprovedReviewsByActivity(activityId));
     }
 }

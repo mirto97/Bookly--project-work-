@@ -12,14 +12,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/bookly/api/diary")
 @RequiredArgsConstructor
-public class DiaryAPI {
+public class DiaryAPI 
+{
 
     private final DiaryService diaryService;
 
     @GetMapping("/available/{activityId}")
-    public List<DiaryDTO> getAvailable(
-            @PathVariable Integer activityId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public List<DiaryDTO> getAvailable
+    (
+        @PathVariable Integer activityId,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) 
+    {
         return diaryService.getAvailableSlots(activityId, date);
     }
 }

@@ -13,14 +13,16 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ReportingService {
+public class ReportingService 
+{
 
     private final ReportingRepository reportingRepository;
     private final ReportingMapper reportingMapper;
     private final UserService userService; // Iniettiamo il service utente
 
     @Transactional
-    public ReportingDTO createReport(ReportingDTO dto) {
+    public ReportingDTO createReport(ReportingDTO dto) 
+    {
         Reporting report = reportingMapper.toEntity(dto);
         report.setStatus(Reporting.ReportingStatus.PENDING);
         
@@ -32,14 +34,16 @@ public class ReportingService {
     }
 
     @Transactional
-    public void resolveReport(int reportId, Reporting.ReportingStatus status) {
+    public void resolveReport(int reportId, Reporting.ReportingStatus status) 
+    {
         Reporting report = reportingRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Segnalazione non trovata"));
         
         report.setStatus(status);
         
         // Se l'admin approva il report, incrementiamo i report ricevuti dall'autore della violazione
-        if (status == Reporting.ReportingStatus.APPROVED && report.getType() == Reporting.ReportingType.CLIENT) {
+        if(status == Reporting.ReportingStatus.APPROVED && report.getType() == Reporting.ReportingType.CLIENT) 
+        {
              // Nota: qui servirebbe l'ID dell'utente segnalato (il target)
              // userService.incrementReports(targetUserId);
         }
@@ -48,13 +52,15 @@ public class ReportingService {
     }
 
     @Transactional
-    public void resolveReport(int reportId, String status) {
+    public void resolveReport(int reportId, String status) 
+    {
         // 1. Trova la segnalazione
         Reporting report = reportingRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Segnalazione non trovata"));
 
         // 2. Converte la stringa in Enum (es. "APPROVED" -> ReportingStatus.APPROVED)
-        try {
+        try 
+        {
             Reporting.ReportingStatus newStatus = Reporting.ReportingStatus.valueOf(status.toUpperCase());
             report.setStatus(newStatus);
             
@@ -62,7 +68,9 @@ public class ReportingService {
             // (es. bloccare l'utente o mandare una mail)
             
             reportingRepository.save(report);
-        } catch (IllegalArgumentException e) {
+        } 
+        catch (IllegalArgumentException e) 
+        {
             throw new RuntimeException("Status non valido: " + status);
         }
     }

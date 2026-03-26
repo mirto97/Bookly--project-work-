@@ -8,7 +8,8 @@ import com.generation.bookly.dto.ActivityDTO;
 import com.generation.bookly.model.Activity;
 
 @Mapper(componentModel = "spring", uses={BookingMapper.class, DiaryMapper.class, ServiceMapper.class})
-public interface ActivityMapper {
+public interface ActivityMapper 
+{
 
         ActivityDTO toDTO(Activity activity);
         List<ActivityDTO> toDTO(List<Activity> activities);

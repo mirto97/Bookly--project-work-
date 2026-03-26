@@ -9,7 +9,8 @@ import com.generation.bookly.dto.ReviewDTO;
 import com.generation.bookly.model.Review;
 
 @Mapper(componentModel = "spring", uses={BookingMapper.class})
-public interface ReviewMapper {
+public interface ReviewMapper 
+{
     
     @Mapping(source = "author.id", target = "authorId")
     @Mapping(source = "booking.id", target = "bookingId")

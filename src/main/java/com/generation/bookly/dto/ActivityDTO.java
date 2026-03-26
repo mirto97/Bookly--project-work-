@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityDTO {
+public class ActivityDTO 
+{
 
     private int id;
 

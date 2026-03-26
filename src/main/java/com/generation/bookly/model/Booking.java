@@ -24,7 +24,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "booking")
-public class Booking {
+public class Booking 
+{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
