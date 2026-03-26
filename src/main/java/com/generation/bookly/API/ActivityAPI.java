@@ -9,7 +9,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +22,7 @@ public class ActivityAPI
 {
 
     private final ActivityService activityService;
-
-    @Autowired
-    private ActivityMapper activityMapper;
+    private final ActivityMapper activityMapper;
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody ActivityDTO dto) 

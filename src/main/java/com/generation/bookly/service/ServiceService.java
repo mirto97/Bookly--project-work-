@@ -2,17 +2,17 @@ package com.generation.bookly.service;
 
 import com.generation.bookly.model.Service;
 import com.generation.bookly.repository.ServiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service
-public class ServiceService 
+@RequiredArgsConstructor
+public class ServiceService
 {
 
-    @Autowired
-    private ServiceRepository serviceRepository;
+    private final ServiceRepository serviceRepository;
 
     // Recupera tutti i servizi nel database
     public List<Service> findAll() 
