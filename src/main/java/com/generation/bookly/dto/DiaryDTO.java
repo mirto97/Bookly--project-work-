@@ -28,7 +28,7 @@ public class DiaryDTO
     private LocalTime endHour;
 
     @NotNull(message = "Activity ID is required")
-    private int activityId;
+    private Integer activityId;
 
     @NotBlank(message = "Available status is required")
     private String available;

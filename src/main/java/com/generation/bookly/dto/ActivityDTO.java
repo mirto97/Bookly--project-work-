@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ActivityDTO 
 {
 
-    private int id;
+    private Integer id;
 
     @NotBlank(message = "Name is required")
     private String name;

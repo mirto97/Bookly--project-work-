@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ServiceDTO 
 {
 
-    private int id;
+    private Integer id;
 
     @NotBlank(message = "Name is required")
     private String name;
@@ -30,7 +30,7 @@ public class ServiceDTO
     private int duration;
 
     @NotNull(message = "Service status is required")
-    private int activityId;
+    private Integer activityId;
 
     private List<BookingDTO> bookings;
 

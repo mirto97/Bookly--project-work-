@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReportingDTO 
 {
-    private int id;
+    private Integer id;
 
     @NotNull(message = "Author ID is required")
-    private int authorId;
+    private Integer authorId;
 
     @NotNull(message = "Status is required")
     private String status;

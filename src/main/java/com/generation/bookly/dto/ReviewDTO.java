@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 public class ReviewDTO 
 {
 
-    private int id;
+    private Integer id;
 
     @NotNull(message = "Guest ID is required")
-    private int authorId;
-    
+    private Integer authorId;
+
     @NotBlank(message = "Content is required")
     private String content;
 
@@ -29,6 +29,6 @@ public class ReviewDTO
     private String status;
 
     @NotNull(message = "Booking ID is required")
-    private int bookingId;
+    private Integer bookingId;
     
 }
