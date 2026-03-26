@@ -25,4 +25,6 @@ public class ReportingAPI {
         reportingService.resolveReport(id, status);
         return ResponseEntity.noContent().build();
     }
+
+    
 }

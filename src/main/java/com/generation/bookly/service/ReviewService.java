@@ -43,4 +43,26 @@ public class ReviewService {
                 .map(reviewMapper::toDTO)
                         .collect(Collectors.toList());
     }
+
+    public void deleteById(int id) {
+        reviewRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void updateContent(int id, String content) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Recensione non trovata"));
+        
+        review.setStatus(Review.ReviewStatus.PENDING); // Moderazione preventiva        
+        review.setContent(content);
+        reviewRepository.save(review);
+    }
+
+    // Metodo per recuperare le recensioni di un utente specifico
+    public List<ReviewDTO> getReviewsByUserId(Integer userId) {
+        return reviewRepository.findByAuthorId(userId)
+                .stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }
