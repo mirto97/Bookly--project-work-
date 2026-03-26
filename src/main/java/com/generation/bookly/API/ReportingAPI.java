@@ -32,9 +32,6 @@ public class ReportingAPI
         return ResponseEntity.noContent().build();
     }
 
-<<<<<<< HEAD
-    
-=======
     // Ottieni tutte le segnalazioni (utile per la dashboard Admin)
     @GetMapping
     public ResponseEntity<List<ReportingDTO>> getAll(@RequestParam(required = false) String status) {
@@ -56,5 +53,4 @@ public class ReportingAPI
         reportingService.deleteReport(id);
         return ResponseEntity.noContent().build();
     }
->>>>>>> 0e1ef71559ef8c060d679ab65c21b6d342ebb561
 }
