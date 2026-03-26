@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookingDTO {
 
-    // id rimane int primitivo: quando è 0 significa "non ancora salvato nel DB"
-    private int id;
+    private Integer id;
 
     // ATTENZIONE: @NotNull NON funziona su tipi primitivi (int, long, boolean...)
     // perché i primitivi non possono mai essere null per definizione del linguaggio Java.
