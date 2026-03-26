@@ -16,15 +16,23 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+// NON usiamo @Data su entity JPA!
+// @Data genera equals()/hashCode() basati su TUTTI i campi, incluse le relazioni lazy.
+// Questo causa problemi con Hibernate: quando accede a una relazione non ancora caricata
+// (lazy proxy), può lanciare LazyInitializationException o produrre loop infiniti.
+// Regola: su @Entity usare sempre @Getter + @Setter separati.
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "booking")
-public class Booking {
+public class Booking 
+{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,7 +14,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/bookly/api/users")
 @RequiredArgsConstructor
-public class UserAPI {
+public class UserAPI 
+{
 
     private final UserService userService;
 

@@ -16,31 +16,57 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ReviewService {
+public class ReviewService 
+{
 
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
 
     @Transactional
-    public ReviewDTO postReview(ReviewDTO dto) {
+    public ReviewDTO postReview(ReviewDTO dto) 
+    {
         Review review = reviewMapper.toEntity(dto);
         review.setStatus(Review.ReviewStatus.PENDING); // Moderazione preventiva
         return reviewMapper.toDTO(reviewRepository.save(review));
     }
 
     @Transactional
-    public void updateReviewStatus(int reviewId, Review.ReviewStatus status) {
+    public void updateReviewStatus(int reviewId, Review.ReviewStatus status) 
+    {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Recensione non trovata"));
         review.setStatus(status);
         reviewRepository.save(review);
     }
 
-    public List<ReviewDTO> getApprovedReviewsByActivity(Integer activityId) {
+    public List<ReviewDTO> getApprovedReviewsByActivity(Integer activityId) 
+    {
         // Recupera solo le recensioni APPROVED per una specifica attività
         return reviewRepository.findByBookingServiceActivityIdAndStatus(activityId, Review.ReviewStatus.APPROVED)
                 .stream()
                 .map(reviewMapper::toDTO)
                         .collect(Collectors.toList());
+    }
+
+    public void deleteById(int id) {
+        reviewRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void updateContent(int id, String content) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Recensione non trovata"));
+        
+        review.setStatus(Review.ReviewStatus.PENDING); // Moderazione preventiva        
+        review.setContent(content);
+        reviewRepository.save(review);
+    }
+
+    // Metodo per recuperare le recensioni di un utente specifico
+    public List<ReviewDTO> getReviewsByUserId(Integer userId) {
+        return reviewRepository.findByAuthorId(userId)
+                .stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

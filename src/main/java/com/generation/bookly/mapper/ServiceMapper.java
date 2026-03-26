@@ -8,7 +8,8 @@ import com.generation.bookly.dto.ServiceDTO;
 import com.generation.bookly.model.Service;
 
 @Mapper(componentModel = "spring", uses={ActivityMapper.class, BookingMapper.class, DiaryMapper.class})
-public interface ServiceMapper {
+public interface ServiceMapper 
+{
     
     ServiceDTO toDTO(Service service);
     List<ServiceDTO> toDTO(List<Service> services);
