@@ -1,6 +1,4 @@
-// Per ora mettiamo tutti i test in questio file, appena testiamo tutte le api, dividiamo i test così:
-// - OkTestsApis.js => test di tutte le api che devono funzionare (status 200)
-// - ErrorTestsApis.js => test di tutte le api che devono restituire errori (status 400, 404, 500)
+// Test di tutte le api che devono funzionare (status 200)
 
 class Test {
     /*
@@ -8,12 +6,12 @@ class Test {
     *       api url             => url della api da testare
     *       verb                => verbo della api
     *       body della request  => corpo della request
-    *       
+    *
     *       RESPONSE
     *       status              => codice previsto
     *       verify              => funzione di verifica da applicare al corpo della response
     *                              callback di verifica
-    * 
+    *
     */
     constructor(testname, apiurl, verb, body, status, verify){
         this.testname = testname;
@@ -22,7 +20,7 @@ class Test {
         this.body = body;
         this.status = status;
         this.verify = verify;
-    }    
+    }
 
     run(){
         console.log("Running "+this.testname);
@@ -63,85 +61,58 @@ class Test {
     }
 }
 
-const BASE = "http://localhost:8080/api/services";
+const BASE = "http://localhost:8080/bookly/api/activities";
 
 let tests = [];
 
-// 1. Get all services
+// 1. Get all approved activities
 tests.push(new Test(
-    "Get all services",
-    BASE,
+    "Get all approved activities",
+    `${BASE}/approved`,
     "GET",
     null,
     200,
     json => Array.isArray(json)
 ));
 
-// 2. Get services by activity id (assume activity 1 exists)
+// 2. Get all pending activities
 tests.push(new Test(
-    "Get services by activity 1",
-    `${BASE}/activity/1`,
+    "Get all pending activities",
+    `${BASE}/pending`,
     "GET",
     null,
     200,
     json => Array.isArray(json)
 ));
 
-// 3. Get service by id 1 (assume exists)
+// 3. Update status of an activity (assume activity 1 exists)
 tests.push(new Test(
-    "Get service by id 1",
-    `${BASE}/1`,
-    "GET",
+    "Update status of activity 1 to APPROVED",
+    `${BASE}/1/status?status=APPROVED`,
+    "PATCH",
     null,
     200,
     json => json && json.id === 1
 ));
 
-// 4. Create a new service (requires activity payload, adjust activity.id se necessario)
-const newServiceBody = {
-    activity: { id: 1 },
-    name: "Test Service API",
-    description: "Servizio creato da test automatico",
-    duration: 60,
-    price: 100,
-    notes: "Nessuna"
-};
-
-tests.push(new Test(
-    "Create new service",
-    BASE,
-    "POST",
-    newServiceBody,
-    200,
-    json => json && json.id && json.name === "Test Service API"
-));
-
-// 5. Delete service by id 1 (se esistenza garantita, cambia id se necessario)
-tests.push(new Test(
-    "Delete service by id 1",
-    `${BASE}/1`,
-    "DELETE",
-    null,
-    204,
-    null
-));
-
-// 6. Get deleted service by id 1 expecting 404
-tests.push(new Test(
-    "Get missing service by id 1 returns 404",
-    `${BASE}/1`,
-    "GET",
-    null,
-    404,
-    null
-));
-
-// Esegui tutti i test in sequenza con un piccolo delay per non sovraccaricare
-let index = 0;
-function runNext() {
-    if (index >= tests.length) return;
-    tests[index].run();
-    index++;
-    setTimeout(runNext, 500);
+function runAll() {
+    return new Promise((resolve) => {
+        let index = 0;
+        function runNext() {
+            if (index >= tests.length) {
+                resolve();
+                return;
+            }
+            tests[index].run();
+            index++;
+            setTimeout(runNext, 500);
+        }
+        runNext();
+    });
 }
-runNext();
+
+if (typeof require !== 'undefined' && require.main === module) {
+    runAll();
+}
+
+module.exports = { runAll };

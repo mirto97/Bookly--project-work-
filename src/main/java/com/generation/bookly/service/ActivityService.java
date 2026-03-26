@@ -55,8 +55,7 @@ public class ActivityService {
         return activityRepository.save(activity);
     }
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
 
     public List<Booking> getAppointmentsByActivityId(int activityId) {
         // Verifichiamo prima se l'attività esiste
