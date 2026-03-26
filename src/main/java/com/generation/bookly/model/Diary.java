@@ -24,7 +24,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Diary {
+public class Diary 
+{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

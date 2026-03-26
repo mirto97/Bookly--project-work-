@@ -16,24 +16,28 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class DiaryService {
+public class DiaryService 
+{
 
     private final DiaryRepository diaryRepository;
     private final DiaryMapper diaryMapper;
 
     // Crea nuovi slot di disponibilità
     @Transactional
-    public DiaryDTO createSlot(DiaryDTO dto) {
+    public DiaryDTO createSlot(DiaryDTO dto) 
+    {
         Diary diary = diaryMapper.toEntity(dto);
         // Default a AVAILABLE se non specificato
-        if (diary.getAvailable() == null) {
+        if(diary.getAvailable() == null) 
+        {
             diary.setAvailable(Diary.Available.AVAILABLE);
         }
         return diaryMapper.toDTO(diaryRepository.save(diary));
     }
 
     // Recupera slot disponibili per una certa attività e data
-    public List<DiaryDTO> getAvailableSlots(Integer activityId, LocalDate date) {
+    public List<DiaryDTO> getAvailableSlots(Integer activityId, LocalDate date) 
+    {
         return diaryRepository.findByActivityIdAndDateAndAvailable(activityId, date, Diary.Available.AVAILABLE)
                 .stream()
                 .map(diaryMapper::toDTO)

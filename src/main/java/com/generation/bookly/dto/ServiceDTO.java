@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceDTO {
+public class ServiceDTO 
+{
 
     private int id;
 

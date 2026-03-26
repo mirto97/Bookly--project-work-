@@ -16,27 +16,31 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ReviewService {
+public class ReviewService 
+{
 
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
 
     @Transactional
-    public ReviewDTO postReview(ReviewDTO dto) {
+    public ReviewDTO postReview(ReviewDTO dto) 
+    {
         Review review = reviewMapper.toEntity(dto);
         review.setStatus(Review.ReviewStatus.PENDING); // Moderazione preventiva
         return reviewMapper.toDTO(reviewRepository.save(review));
     }
 
     @Transactional
-    public void updateReviewStatus(int reviewId, Review.ReviewStatus status) {
+    public void updateReviewStatus(int reviewId, Review.ReviewStatus status) 
+    {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Recensione non trovata"));
         review.setStatus(status);
         reviewRepository.save(review);
     }
 
-    public List<ReviewDTO> getApprovedReviewsByActivity(Integer activityId) {
+    public List<ReviewDTO> getApprovedReviewsByActivity(Integer activityId) 
+    {
         // Recupera solo le recensioni APPROVED per una specifica attività
         return reviewRepository.findByBookingServiceActivityIdAndStatus(activityId, Review.ReviewStatus.APPROVED)
                 .stream()
