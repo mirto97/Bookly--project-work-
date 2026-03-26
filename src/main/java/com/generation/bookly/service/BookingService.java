@@ -51,10 +51,7 @@ public class BookingService
 
     public List<BookingDTO> getUserBookings(int userId) 
     {
-        // Recuperiamo le entità
-        // findByUser_Id usa il naming con underscore per navigare la relazione @ManyToOne
-        // (vedi commento in BookingRepository per la spiegazione completa)
-        List<Booking> entities = bookingRepository.findByUser_Id(userId);
+        List<Booking> entities = bookingRepository.findByUserId(userId);
         
         // Trasformiamole in DTO (MapStruct gestisce la conversione della lista)
         return entities.stream()
