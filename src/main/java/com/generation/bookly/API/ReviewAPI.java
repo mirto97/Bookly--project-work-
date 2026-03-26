@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bookly/api/reviews")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class ReviewAPI 
 {
 

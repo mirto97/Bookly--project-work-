@@ -14,6 +14,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/bookly/api/users")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserAPI 
 {
 

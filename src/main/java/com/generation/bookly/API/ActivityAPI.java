@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bookly/api/activities")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class ActivityAPI 
 {
 

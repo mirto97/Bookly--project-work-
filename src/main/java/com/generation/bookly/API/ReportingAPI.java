@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/bookly/api/reports")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class ReportingAPI 
 {
 

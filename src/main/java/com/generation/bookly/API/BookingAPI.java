@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bookly/api/bookings")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class BookingAPI {
 
     private final BookingService bookingService;
