@@ -53,7 +53,7 @@ public class User
 
     @Enumerated(EnumType.STRING)
     private Role role; // "GUEST" o "ADMIN"
-    public enum Role { GUEST, ADMIN }
+    public enum Role { GUEST, ADMIN, OWNER }
 
     @Column(name = "reportings_received")
     @Min(value = 0, message = "Reportings received cannot be negative")
