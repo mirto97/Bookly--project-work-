@@ -48,6 +48,5 @@ public class Review
     private ReviewStatus status = ReviewStatus.PENDING;
     public enum ReviewStatus { PENDING, APPROVED, REJECTED }
 
-    // Impostato server-side al momento della creazione, non arriva dal frontend
     private LocalDateTime createdAt;
 }
