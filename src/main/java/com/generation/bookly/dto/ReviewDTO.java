@@ -1,5 +1,6 @@
 package com.generation.bookly.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -33,8 +34,8 @@ public class ReviewDTO
     private Integer bookingId;
 
     // Impostato server-side al momento della creazione.
-    // Serializzato da Jackson come ISO string (es. "2026-03-27T14:30:00") per
-    // permettere al frontend di filtrare/ordinare con new Date(createdAt) e
-    // formattare a display con DatePipe.
+    // @JsonFormat garantisce la serializzazione come ISO string indipendentemente
+    // dalla configurazione globale di Jackson — il frontend può fare new Date(createdAt)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 }
