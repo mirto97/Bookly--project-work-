@@ -11,6 +11,8 @@ const { runAll: runOkReview } = require('./OkReviewTestsApi');
 const { runAll: runErrorReview } = require('./ErrorReviewTestsApi');
 const { runAll: runOkReporting } = require('./OkReportingTestsApi');
 const { runAll: runErrorReporting } = require('./ErrorReportingTestsApi');
+const { runAll: runOkDiary } = require('./OkDiaryTest');
+const { runAll: runErrorDiary } = require('./ErrorDiaryTest');
 
 async function runAllTests() {
     console.log('==== Run OK Service tests ====>');
@@ -48,6 +50,12 @@ async function runAllTests() {
 
     console.log('==== Run Error Reporting tests ====>');
     await runErrorReporting();
+
+    console.log('==== Run OK Diary tests ====>');
+    await runOkDiary();
+
+    console.log('==== Run Error Diary tests ====>');
+    await runErrorDiary();
 
     console.log('==== All tests completed ====>');
 }
