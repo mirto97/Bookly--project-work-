@@ -11,5 +11,9 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>
 {
     List<Activity> findByStatus(Activity.ActivityStatus status);
     List<Activity> findByCategory(String category);  
-    Optional<Activity> findByOwner_Id(Integer ownerId);
+    // Gabri: cambiato da findByOwner_Id (Optional) a findFirstByOwner_Id
+    // perché durante i test sono stati creati più record per lo stesso owner.
+    // findFirst evita NonUniqueResultException. In produzione dovrebbe esserci
+    // un vincolo UNIQUE su owner_id, ma per ora gestiamo lato query.
+    Optional<Activity> findFirstByOwner_Id(Integer ownerId);
 }

@@ -25,8 +25,11 @@ public class Activity
     @Column(name = "category", length = 50)
     private String category;
 
+    // Gabri: unique = true perché ogni owner può registrare una sola attività.
+    // Il vincolo è enforced a livello DB: un secondo insert per lo stesso owner_id
+    // restituisce un errore prima ancora di arrivare al service.
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false, unique = true)
     private User owner;
 
     @Enumerated(EnumType.STRING)

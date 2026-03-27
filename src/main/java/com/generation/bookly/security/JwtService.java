@@ -24,13 +24,18 @@ public class JwtService {
     public String generateToken(User user) { // Assicurati che l'import sia com.generation.bookly.model.User
         Map<String, Object> extraClaims = new HashMap<>();
         
-        // Aggiungiamo i claims solo se l'utente non è nullo
+        // Gabri: Ho aggiunto id, lastName nel token perché il frontend (UserService.tokenToUser)
+        // legge questi campi dal payload JWT per ricostruire l'oggetto utente in memoria.
+        // Prima mancava l'id, quindi loggedUser().id era sempre undefined e tutte le chiamate
+        // API che usavano l'id (owner dashboard, calendar page, ecc.) fallivano silenziosamente.
+        extraClaims.put("id", user.getId());
+
         if (user.getRole() != null) {
             extraClaims.put("role", user.getRole().name());
         }
-        
-        // Corretto: usiamo 'user' e non 'string'
-        extraClaims.put("firstName", user.getFirstName()); 
+
+        extraClaims.put("firstName", user.getFirstName());
+        extraClaims.put("lastName", user.getLastName());
 
         return Jwts.builder()
                 .setClaims(extraClaims)
