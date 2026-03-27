@@ -40,9 +40,19 @@ public class DiaryService
     }
 
     // Recupera slot disponibili per una certa attività e data
-    public List<DiaryDTO> getAvailableSlots(Integer activityId, LocalDate date) 
+    public List<DiaryDTO> getAvailableSlots(Integer activityId, LocalDate date)
     {
         return diaryRepository.findByActivityIdAndDateAndAvailable(activityId, date, Diary.Available.AVAILABLE)
+                .stream()
+                .map(diaryMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Gabri: aggiunto per il modale del titolare — restituisce tutti gli slot del giorno
+    // inclusi NOTAVAILABLE (chiusure) e BOOKED, così il titolare può vederli ed eliminarli.
+    public List<DiaryDTO> getAllSlots(Integer activityId, LocalDate date)
+    {
+        return diaryRepository.findByActivityIdAndDate(activityId, date)
                 .stream()
                 .map(diaryMapper::toDTO)
                 .collect(Collectors.toList());

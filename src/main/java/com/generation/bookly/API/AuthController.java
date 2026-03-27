@@ -16,6 +16,9 @@ import com.generation.bookly.security.RegisterRequestDTO;
 
 
 @RestController
+// Gabri: Ho corretto il path da /api/auth a /bookly/api/auth per allinearlo
+// agli altri controller e al frontend, che chiamava /bookly/api/auth/login.
+// Prima il login dava sempre 404.
 @RequestMapping("/bookly/api/auth")
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {

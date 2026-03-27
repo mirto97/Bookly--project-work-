@@ -41,8 +41,21 @@ public class ServiceService
         return serviceRepository.save(service);
     }
 
+    // Aggiorna i campi modificabili di un servizio esistente
+    public Service updateById(int id, Service patch)
+    {
+        Service existing = serviceRepository.findById(id).orElse(null);
+        if (existing == null) return null;
+        existing.setName(patch.getName());
+        existing.setDescription(patch.getDescription());
+        existing.setDuration(patch.getDuration());
+        existing.setPrice(patch.getPrice());
+        existing.setNotes(patch.getNotes());
+        return serviceRepository.save(existing);
+    }
+
     // Elimina un servizio per ID
-    public void deleteById(int id) 
+    public void deleteById(int id)
     {
         serviceRepository.deleteById(id);
     }

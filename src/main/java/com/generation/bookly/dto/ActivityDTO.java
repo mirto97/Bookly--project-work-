@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,9 @@ public class ActivityDTO
     @NotBlank(message = "Category is required")
     private String category;
 
-    @NotBlank(message = "Owner ID is required")
+    // Gabri: @NotBlank è valido solo su String/CharSequence, non su Integer.
+    // Sostituito con @NotNull per evitare ConstraintDefinitionException a runtime.
+    @NotNull(message = "Owner ID is required")
     private Integer ownerId;
 
     @NotBlank(message = "Type is required")
@@ -33,10 +36,12 @@ public class ActivityDTO
     @NotBlank(message = "Activity status is required")
     private String status;
 
+
     @NotBlank(message = "Company email is required")
     private String companyEmail;
 
-    @NotBlank(message = "Registration Date is required")
+    // Gabri: registrationDate viene impostata lato backend in ActivityService,
+    // quindi il frontend non la invia e non va validata qui.
     private LocalDateTime registrationDate;
 
     private List<ServiceDTO> services;

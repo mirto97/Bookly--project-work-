@@ -22,6 +22,19 @@ public class DiaryAPI
 
     private final DiaryService diaryService;
 
+    // Gabri: endpoint per il titolare — restituisce tutti gli slot di un giorno
+    // (AVAILABLE, NOTAVAILABLE, BOOKED) così il modale del calendario può mostrare
+    // anche le chiusure e permettere di eliminarle.
+    @GetMapping("/all/{activityId}")
+    public List<DiaryDTO> getAllSlots
+    (
+        @PathVariable Integer activityId,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    )
+    {
+        return diaryService.getAllSlots(activityId, date);
+    }
+
     @GetMapping("/available/{activityId}")
     public List<DiaryDTO> getAvailable
     (
