@@ -3,6 +3,8 @@ package com.generation.bookly.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,7 +53,7 @@ public class User
 
     @Enumerated(EnumType.STRING)
     private Role role; // "GUEST" o "ADMIN"
-    public enum Role { GUEST, ADMIN }
+    public enum Role { GUEST, ADMIN, OWNER }
 
     @Column(name = "reportings_received")
     @Min(value = 0, message = "Reportings received cannot be negative")
@@ -59,5 +61,4 @@ public class User
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
-
 }
