@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -46,4 +47,7 @@ public class Review
     @Enumerated(EnumType.STRING)
     private ReviewStatus status = ReviewStatus.PENDING;
     public enum ReviewStatus { PENDING, APPROVED, REJECTED }
+
+    // Impostato server-side al momento della creazione, non arriva dal frontend
+    private LocalDateTime createdAt;
 }

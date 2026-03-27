@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -25,10 +26,12 @@ public class ReviewDTO
     @Min(1) @Max(5)
     private int rating;
 
-    @NotBlank(message = "Status is required")
+    // Impostato server-side: il client non lo invia, viene restituito nella risposta
     private String status;
 
     @NotNull(message = "Booking ID is required")
     private Integer bookingId;
-    
+
+    // Impostato server-side al momento della creazione
+    private LocalDateTime createdAt;
 }

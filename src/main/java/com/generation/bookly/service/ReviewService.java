@@ -1,5 +1,6 @@
 package com.generation.bookly.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public class ReviewService
     {
         Review review = reviewMapper.toEntity(dto);
         review.setStatus(Review.ReviewStatus.PENDING); // Moderazione preventiva
+        review.setCreatedAt(LocalDateTime.now());
         return reviewMapper.toDTO(reviewRepository.save(review));
     }
 

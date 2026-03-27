@@ -19,6 +19,7 @@ public interface ReviewMapper
 
     @Mapping(source = "authorId", target = "author.id")
     @Mapping(source = "bookingId", target = "booking.id")
+    @Mapping(target = "createdAt", ignore = true)
     Review toEntity(ReviewDTO reviewDTO);
     List<Review> toEntity(List<ReviewDTO> reviewDTOs);
 
