@@ -1,6 +1,5 @@
 # Sprint Backlog - Settimana 1
-**Periodo:** 24-27 Marzo 2026
-**Team:** Gabriela, Alessio, Andrea, Mirto, Adriano
+**Periodo:** 23-27 Marzo 2026
 
 ---
 
