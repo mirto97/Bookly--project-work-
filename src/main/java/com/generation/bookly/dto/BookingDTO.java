@@ -32,6 +32,12 @@ public class BookingDTO {
     @NotNull(message = "Service ID is required")
     private Integer serviceId;
 
+    // Campo read-only, derivato da service.activity.id via @Mapping nel BookingMapper.
+    // Il frontend ne ha bisogno per sapere a quale attività appartiene la prenotazione,
+    // così può caricare gli slot disponibili (GET /diary/available/{activityId}) durante il reschedule.
+    // Non viene mai inviato dal client; viene ignorato in toEntity() perché Booking non ha questo campo.
+    private Integer activityId;
+
     // Usiamo l'enum BookingStatus invece di String:
     // - più sicuro (impedisce valori non validi come "PIPPO")
     // - coerente con l'entità Booking

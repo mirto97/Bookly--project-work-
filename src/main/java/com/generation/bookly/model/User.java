@@ -59,6 +59,16 @@ public class User
     @Min(value = 0, message = "Reportings received cannot be negative")
     private int reportingsReceived = 0;
 
+    // Aggiunto per la pagina profilo del guest: l'utente può scrivere una breve bio su se stesso.
+    // TEXT invece di VARCHAR perché la bio può essere più lunga di 255 caratteri.
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    // URL della foto profilo: il client carica l'immagine su un hosting esterno (es. imgur, cloudinary)
+    // e salva solo l'URL qui. Evita di stoccare binari nel DB.
+    @Column(name = "photo_url")
+    private String photoUrl;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 }

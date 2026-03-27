@@ -36,6 +36,9 @@ public interface BookingMapper {
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "diaryId", source = "diary.id")
     @Mapping(target = "serviceId", source = "service.id")
+    // activityId è un campo extra nel DTO (non in Booking): lo popoliamo navigando
+    // la relazione service → activity per restituirlo al frontend.
+    @Mapping(target = "activityId", source = "service.activity.id")
     BookingDTO toDTO(Booking booking);
 
     // MapStruct genera automaticamente i metodi per le liste

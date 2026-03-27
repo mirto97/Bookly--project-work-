@@ -44,6 +44,10 @@ public class UserDTO
     @Min(value = 0, message = "Reportings received cannot be negative")
     private int reportingsReceived;
 
+    // Aggiunti per la dashboard guest: bio e foto profilo modificabili dall'utente
+    private String bio;
+    private String photoUrl;
+
     private List<ReviewDTO> reviews;
-    
+
 }
