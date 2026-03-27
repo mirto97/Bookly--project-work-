@@ -114,7 +114,6 @@ public class UserService
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
 
-        // Controllo se la nuova password è diversa dalla vecchia
         if (newPassword.equals(existingUser.getPassword())) {
             throw new IllegalArgumentException("La nuova password è identica a quella attuale");
         }
@@ -122,5 +121,23 @@ public class UserService
         existingUser.setPassword(newPassword);
         User saved = userRepository.save(existingUser);
         return userMapper.toDTO(saved);
+    }
+
+    // Aggiornamento parziale (PATCH) della bio: aggiorna solo questo campo senza toccare il resto.
+    // Usato dalla pagina profilo del guest, dove la bio è modificabile inline.
+    public UserDTO updateBio(int id, String bio) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
+        user.setBio(bio);
+        return userMapper.toDTO(userRepository.save(user));
+    }
+
+    // Aggiornamento parziale (PATCH) della foto profilo via URL.
+    // Salviamo solo l'URL dell'immagine, non il binario — l'immagine è hostata esternamente.
+    public UserDTO updatePhoto(int id, String photoUrl) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
+        user.setPhotoUrl(photoUrl);
+        return userMapper.toDTO(userRepository.save(user));
     }
 }

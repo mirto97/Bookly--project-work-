@@ -113,4 +113,34 @@ public class UserAPI
             return ResponseEntity.notFound().build();
         }
     }
+
+    // Endpoint PATCH per aggiornare solo la bio dell'utente.
+    // Usiamo Map<String, String> invece di un DTO dedicato perché il body è un singolo campo:
+    // { "bio": "..." } — coerente con il pattern già usato per email e password.
+    @PatchMapping("/{id}/bio")
+    public ResponseEntity<?> updateBio(@PathVariable int id, @RequestBody Map<String, String> request) {
+        try {
+            String bio = request.get("bio");
+            if (bio == null) {
+                return ResponseEntity.badRequest().body("Bio non valida");
+            }
+            return ResponseEntity.ok(userService.updateBio(id, bio));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Endpoint PATCH per aggiornare solo la foto profilo dell'utente (via URL).
+    @PatchMapping("/{id}/photo")
+    public ResponseEntity<?> updatePhoto(@PathVariable int id, @RequestBody Map<String, String> request) {
+        try {
+            String photoUrl = request.get("photoUrl");
+            if (photoUrl == null || photoUrl.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("URL foto non valido");
+            }
+            return ResponseEntity.ok(userService.updatePhoto(id, photoUrl));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
