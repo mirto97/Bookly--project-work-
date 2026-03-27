@@ -1,5 +1,6 @@
 package com.generation.bookly.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -32,6 +33,7 @@ public class ReviewDTO
     @NotNull(message = "Booking ID is required")
     private Integer bookingId;
 
-    // Impostato server-side al momento della creazione
+    // Impostato server-side al momento della creazione; serializzato da Jackson come "dd/MM/yyyy HH:mm"
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime createdAt;
 }
