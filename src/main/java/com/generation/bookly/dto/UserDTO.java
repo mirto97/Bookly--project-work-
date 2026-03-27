@@ -3,6 +3,7 @@ package com.generation.bookly.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Min;
@@ -27,6 +28,7 @@ public class UserDTO
     private String lastName;
 
     @NotNull(message = "Date of birth is required")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dob;
 
     @NotNull(message = "Email is required")
