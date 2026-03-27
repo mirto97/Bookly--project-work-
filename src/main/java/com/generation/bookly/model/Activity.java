@@ -25,10 +25,14 @@ public class Activity
     @Column(name = "category", length = 50)
     private String category;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
     private TypeStatus type;
-    public enum TypeStatus { PUBLIC, PRIVATE}
+    public enum TypeStatus { PUBLIC, PRIVATE }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)

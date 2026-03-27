@@ -115,4 +115,10 @@ public class BookingService
         return bookingMapper.toDTO(bookingRepository.save(booking));
     }
 
+    public List<BookingDTO> getByActivityId(int activityId) {
+    return bookingRepository.findByService_Activity_Id(activityId)
+        .stream()
+        .map(bookingMapper::toDTO)
+        .collect(Collectors.toList());
+    }
 }

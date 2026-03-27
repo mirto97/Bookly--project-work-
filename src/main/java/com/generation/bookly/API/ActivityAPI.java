@@ -24,6 +24,20 @@ public class ActivityAPI
     private final ActivityService activityService;
     private final ActivityMapper activityMapper;
 
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<Object> findByOwnerId(@PathVariable int ownerId)
+    {
+        try
+        {
+            ActivityDTO dto = activityService.getActivityByOwnerId(ownerId);
+            return ResponseEntity.ok(dto);
+        }
+        catch (EntityNotFoundException e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody ActivityDTO dto) 
     {
