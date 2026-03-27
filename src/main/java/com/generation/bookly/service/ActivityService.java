@@ -23,6 +23,12 @@ public class ActivityService
     private final ActivityRepository activityRepository;
     private final ActivityMapper activityMapper;
 
+    public ActivityDTO getActivityByOwnerId(int ownerId) {
+        Activity activity = (activityRepository.findByOwner_Id(ownerId))
+            .orElseThrow(() -> new EntityNotFoundException("Nessuna attività per owner id: " + ownerId));
+        return activityMapper.toDTO(activity);
+    }
+
     public List<ActivityDTO> getAllApprovedActivities() 
     {
         return activityRepository.findByStatus(Activity.ActivityStatus.APPROVED)

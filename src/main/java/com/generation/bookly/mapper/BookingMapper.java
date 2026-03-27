@@ -14,7 +14,7 @@ import com.generation.bookly.model.Booking;
 
 // RIMOSSO "uses" che causavano dipendenze circolari. 
 // Poiché mappiamo manualmente gli ID, MapStruct non ha bisogno degli altri mapper qui.
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ReviewMapper.class})
 public interface BookingMapper {
 
     // Da DTO → Entity (es. quando riceviamo una richiesta POST/PUT dal client)

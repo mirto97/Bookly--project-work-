@@ -22,13 +22,16 @@ public class ActivityDTO
     @NotBlank(message = "Category is required")
     private String category;
 
+    @NotBlank(message = "Owner ID is required")
+    private Integer ownerId;
+
     @NotBlank(message = "Type is required")
     private String type;
 
     // per ora li passiamo tramite stringa anche se sono enum, così evitiamo problemi di serializzazione
 
     @NotBlank(message = "Activity status is required")
-    private String activityStatus;
+    private String status;
 
     @NotBlank(message = "Company email is required")
     private String companyEmail;

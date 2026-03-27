@@ -58,4 +58,10 @@ public class BookingAPI {
     public ResponseEntity<BookingDTO> updateStatusById(@PathVariable int id, @RequestBody Booking.BookingStatus status) {
         return ResponseEntity.ok(bookingService.updateBookingStatusById(id, status));
     }
+
+    @GetMapping("/activity/{activityId}")
+    public ResponseEntity<List<BookingDTO>> findByActivityId(@PathVariable int activityId)
+    {
+        return ResponseEntity.ok(bookingService.getByActivityId(activityId));
+    }
 }
