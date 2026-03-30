@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,6 +22,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import com.generation.bookly.repository.UserRepository;
+import com.generation.bookly.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -41,6 +46,7 @@ public class SecurityConfig {
                 // Permettiamo di vedere le attività e i singoli servizi senza essere loggati
                 .requestMatchers(HttpMethod.GET, "/bookly/api/activities/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/bookly/api/services/**").permitAll()
+                .requestMatchers("/bookly/api/users/**").authenticated()
                 //TODO
 	            .anyRequest().authenticated()
                 //.anyRequest().permitAll()
@@ -88,5 +94,17 @@ public class SecurityConfig {
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
         bean.setOrder(-102); // Priorità massima: deve girare prima di tutto
         return bean;
+    }
+
+    @Autowired
+    private UserRepository userRepository; // Assicurati di avere il repository degli utenti
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            // Supponendo che 'username' nel token sia l'email
+            return userRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato: " + username));
+        };
     }
 }
