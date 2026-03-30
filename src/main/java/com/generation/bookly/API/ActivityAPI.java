@@ -3,6 +3,7 @@ package com.generation.bookly.API;
 import com.generation.bookly.dto.ActivityDTO;
 import com.generation.bookly.mapper.ActivityMapper;
 import com.generation.bookly.model.Activity;
+import com.generation.bookly.repository.ActivityRepository;
 import com.generation.bookly.service.ActivityService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -13,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -26,6 +25,8 @@ public class ActivityAPI
 
     private final ActivityService activityService;
     private final ActivityMapper activityMapper;
+    private final ActivityRepository activityRepository;
+
 
     @GetMapping
     public ResponseEntity<List<ActivityDTO>> findAll() 
@@ -100,5 +101,5 @@ public class ActivityAPI
     {
         activityService.deleteActivityById(id);
         return ResponseEntity.noContent().build();
-    } 
+    }
 }
