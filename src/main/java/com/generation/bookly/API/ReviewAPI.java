@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -87,5 +88,15 @@ public class ReviewAPI
         // Implementa un metodo nel ReviewService per recuperare le recensioni di un utente
         List<ReviewDTO> reviews = reviewService.getReviewsByUserId(userId);
         return ResponseEntity.ok(reviews);
+    }
+
+    @PatchMapping("/{id}/reply")
+    public ResponseEntity<ReviewDTO> addOwnerReply(
+        @PathVariable int id, 
+        @RequestBody Map<String, String> payload // Riceviamo un JSON { "reply": "testo..." }
+    ) {
+        String replyText = payload.get("reply");
+        ReviewDTO updatedReview = reviewService.addReply(id, replyText);
+        return ResponseEntity.ok(updatedReview);
     }
 }

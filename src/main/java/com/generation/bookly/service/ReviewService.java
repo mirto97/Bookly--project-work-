@@ -114,4 +114,13 @@ public class ReviewService
                 .map(reviewMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public ReviewDTO addReply(int reviewId, String replyText) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("Recensione non trovata"));
+        
+        review.setOwnerReply(replyText);
+        return reviewMapper.toDTO(reviewRepository.save(review));
+    }
 }
