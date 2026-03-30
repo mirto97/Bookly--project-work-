@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/bookly/api/activities")
@@ -23,6 +26,12 @@ public class ActivityAPI
 
     private final ActivityService activityService;
     private final ActivityMapper activityMapper;
+
+    @GetMapping
+    public ResponseEntity<List<ActivityDTO>> findAll() 
+    {
+        return ResponseEntity.ok(activityService.getAllActivities());
+    }
 
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<Object> findByOwnerId(@PathVariable int ownerId)

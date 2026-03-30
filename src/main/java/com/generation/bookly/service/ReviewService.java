@@ -23,6 +23,13 @@ public class ReviewService
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
 
+    public List<ReviewDTO> getAll() {
+        return reviewRepository.findAll()
+                .stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public ReviewDTO postReview(ReviewDTO dto) 
     {
@@ -67,6 +74,26 @@ public class ReviewService
     // Metodo per recuperare le recensioni di un utente specifico
     public List<ReviewDTO> getReviewsByUserId(Integer userId) {
         return reviewRepository.findByAuthorId(userId)
+                .stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReviewDTO> getReviewsByActivityId(Integer activityId) {
+        return reviewRepository.findByBooking_Service_Activity_Id(activityId)
+                .stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public ReviewDTO getById(int id) {
+        return reviewRepository.findById(id)
+                .map(reviewMapper::toDTO)
+                .orElse(null);
+    }
+
+    public List<ReviewDTO> getPendingReviews() {
+        return reviewRepository.findByStatus(Review.ReviewStatus.PENDING)
                 .stream()
                 .map(reviewMapper::toDTO)
                 .collect(Collectors.toList());

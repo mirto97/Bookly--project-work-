@@ -13,4 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review, Integer>
 
     // Metodo per recuperare le recensioni di un utente specifico
     List<Review> findByAuthorId(int userId);
+    List<Review> findByStatus(Review.ReviewStatus status);
+    List<Review> findByBooking_Service_Activity_Id(int activityId);
 }

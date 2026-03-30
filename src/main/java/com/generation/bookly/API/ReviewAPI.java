@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/bookly/api/reviews")
@@ -18,6 +21,37 @@ public class ReviewAPI
 {
 
     private final ReviewService reviewService;
+
+    // qua me l'ha fatto che se passo activityId mi restituisce solo quelle, se passo userId solo quelle, altrimenti tutte
+    // valutiamo se ha senso
+    @GetMapping
+    public ResponseEntity<List<ReviewDTO>> getAll(
+            @RequestParam(required = false) Integer activityId,
+            @RequestParam(required = false) Integer userId) 
+    {
+        if (activityId != null) {
+            return ResponseEntity.ok(reviewService.getReviewsByActivityId(activityId));
+        } else if (userId != null) {
+            return ResponseEntity.ok(reviewService.getReviewsByUserId(userId));
+        } else {
+            return ResponseEntity.ok(reviewService.getAll());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReviewDTO> getById(@PathVariable int id) {
+        ReviewDTO review = reviewService.getById(id);
+        if (review != null) {
+            return ResponseEntity.ok(review);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<ReviewDTO>> getPendingReviews() {
+        return ResponseEntity.ok(reviewService.getPendingReviews());
+    }
 
     @PostMapping
     public ResponseEntity<ReviewDTO> create(@RequestBody ReviewDTO dto) 
