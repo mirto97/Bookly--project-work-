@@ -30,6 +30,22 @@ public class ReviewService
                 .collect(Collectors.toList());
     }
 
+    public ReviewDTO updateStatus(int id, String status) {
+        // Controllo esistenza
+        reviewRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Review non trovata: " + id));
+
+        // Validazione e conversione dello status
+        Review.ReviewStatus newStatus;
+        try {
+            newStatus = Review.ReviewStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Status non valido: " + status);
+        }
+        updateReviewStatus(id, newStatus);
+        return getById(id);
+    }
+
     @Transactional
     public ReviewDTO postReview(ReviewDTO dto) 
     {

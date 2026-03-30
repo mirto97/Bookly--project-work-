@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -36,6 +34,11 @@ public class ReviewAPI
         } else {
             return ResponseEntity.ok(reviewService.getAll());
         }
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ReviewDTO> updateStatus(@PathVariable int id, @RequestParam String status) {
+        return ResponseEntity.ok(reviewService.updateStatus(id, status));
     }
 
     @GetMapping("/{id}")
