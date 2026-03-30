@@ -3,7 +3,6 @@ package com.generation.bookly.API;
 import com.generation.bookly.dto.ActivityDTO;
 import com.generation.bookly.mapper.ActivityMapper;
 import com.generation.bookly.model.Activity;
-import com.generation.bookly.repository.ActivityRepository;
 import com.generation.bookly.service.ActivityService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -25,7 +24,6 @@ public class ActivityAPI
 
     private final ActivityService activityService;
     private final ActivityMapper activityMapper;
-    private final ActivityRepository activityRepository;
 
 
     @GetMapping

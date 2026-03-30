@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,11 +34,16 @@ public class SecurityConfig {
 	        .csrf(csrf -> csrf.disable())
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/bookly/api/auth/**").permitAll()
-                .requestMatchers("/error").permitAll()
+	            // 1. Auth & Error (Sempre aperti)
+                .requestMatchers("/bookly/api/auth/**", "/error").permitAll()
+
+                // 2. Homepage e Ricerca (GET pubblici)
+                // Permettiamo di vedere le attività e i singoli servizi senza essere loggati
+                .requestMatchers(HttpMethod.GET, "/bookly/api/activities/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/bookly/api/services/**").permitAll()
                 //TODO
-	            //.anyRequest().authenticated()
-                .anyRequest().permitAll()
+	            .anyRequest().authenticated()
+                //.anyRequest().permitAll()
 	        )
 	        // Rimuovi .authenticationProvider(authenticationProvider) da qui
 	        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
