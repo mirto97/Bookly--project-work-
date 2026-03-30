@@ -24,6 +24,20 @@ public class ActivityAPI
     private final ActivityService activityService;
     private final ActivityMapper activityMapper;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> findById(@PathVariable int id)
+    {
+        try
+        {
+            ActivityDTO dto = activityService.getActivityById(id);
+            return ResponseEntity.ok(dto);
+        }
+        catch (EntityNotFoundException e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<Object> findByOwnerId(@PathVariable int ownerId)
     {
