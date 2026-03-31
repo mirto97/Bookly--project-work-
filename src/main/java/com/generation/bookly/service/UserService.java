@@ -1,5 +1,6 @@
 package com.generation.bookly.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.generation.bookly.dto.UserDTO;
@@ -10,7 +11,10 @@ import com.generation.bookly.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,9 @@ public class UserService
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+
 
     public UserDTO incrementReports(int userId) 
     {
@@ -114,11 +121,17 @@ public class UserService
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
 
-        if (newPassword.equals(existingUser.getPassword())) {
+        // 1. Controllo di sicurezza: la nuova password è uguale alla vecchia?
+        // Nota: Con l'hash non puoi usare .equals(), devi usare .matches()
+        if (passwordEncoder.matches(newPassword, existingUser.getPassword())) {
             throw new IllegalArgumentException("La nuova password è identica a quella attuale");
         }
 
-        existingUser.setPassword(newPassword);
+        // 2. HASHING della nuova password prima del salvataggio
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        existingUser.setPassword(encodedPassword);
+
+        // 3. Salvataggio della password aggiornata
         User saved = userRepository.save(existingUser);
         return userMapper.toDTO(saved);
     }
@@ -139,5 +152,36 @@ public class UserService
                 .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
         user.setPhotoUrl(photoUrl);
         return userMapper.toDTO(userRepository.save(user));
+    }
+
+    // Mappa temporanea: ID Utente -> Codice OTP
+    private final Map<Integer, String> otpStorage = new HashMap<>();
+
+    public void generateAndSendOtp(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Utente non trovato"));
+        
+        // Genera OTP
+        String otp = String.format("%06d", new Random().nextInt(999999));
+        otpStorage.put(userId, otp);
+        
+        // USA IL TUO SERVICE ESISTENTE
+        emailService.inviaMailOTP(user.getEmail(), user.getFirstName(), otp);
+        
+        // Mantieni il log per sicurezza durante i test
+        System.out.println("DEBUG OTP per utente " + userId + ": " + otp);
+    }
+
+    public UserDTO verifyAndChangePassword(int id, String otp, String newPassword) {
+        String validOtp = otpStorage.get(id);
+        
+        if (validOtp == null || !validOtp.equals(otp)) {
+            throw new IllegalArgumentException("Codice OTP errato o scaduto");
+        }
+        
+        // Se l'OTP è corretto, procediamo con il cambio password (hashato!)
+        UserDTO updated = updatePassword(id, newPassword);
+        otpStorage.remove(id); // Puliamo la mappa
+        return updated;
     }
 }
