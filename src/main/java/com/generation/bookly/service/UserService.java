@@ -67,6 +67,12 @@ public class UserService
         });
 
         User user = userMapper.toEntity(userDTO);
+        
+        // --- AGGIUNGI QUESTA RIGA ---
+        // Criptiamo la password prima di salvare l'entità
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        // ----------------------------
+
         // Impostazioni default
         user.setReportingsReceived(0);
         User saved = userRepository.save(user);
@@ -81,7 +87,7 @@ public class UserService
         existingUser.setLastName(userDTO.getLastName());
         existingUser.setDob(userDTO.getDob());
         existingUser.setEmail(userDTO.getEmail());
-        existingUser.setPassword(userDTO.getPassword());
+        //existingUser.setPassword(userDTO.getPassword());
         existingUser.setRole(User.Role.valueOf(userDTO.getRole()));
         existingUser.setReportingsReceived(userDTO.getReportingsReceived());
 
