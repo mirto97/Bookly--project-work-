@@ -122,4 +122,17 @@ public class ActivityService
         activityRepository.deleteById(id);
     }
         
+    public List<ActivityDTO> searchByName(String name) {
+        return activityRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(activityMapper::toDTO)
+                .toList();
+    }
+
+    public List<ActivityDTO> getAllActivities() {
+        return activityRepository.findAll()
+                .stream()
+                .map(activityMapper::toDTO)
+                .toList();
+    }
 }

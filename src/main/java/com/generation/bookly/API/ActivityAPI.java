@@ -34,6 +34,15 @@ public class ActivityAPI
         return ResponseEntity.ok(activities);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ActivityDTO>> search(@RequestParam(required = false) String name) {
+        // Se il parametro name è presente, cerca per nome, altrimenti prendi tutto
+        if (name != null && !name.isBlank()) {
+            return ResponseEntity.ok(activityService.searchByName(name));
+        }
+        return ResponseEntity.ok(activityService.getAllActivities());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id)
     {

@@ -17,4 +17,5 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>
     // un vincolo UNIQUE su owner_id, ma per ora gestiamo lato query.
     Optional<Activity> findFirstByOwner_Id(Integer ownerId);
     List<Activity> findByOwnerId(Integer ownerId);
+    List<Activity> findByNameContainingIgnoreCase(String name);
 }
