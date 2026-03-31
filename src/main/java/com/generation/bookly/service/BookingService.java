@@ -114,4 +114,15 @@ public class BookingService
         .map(bookingMapper::toDTO)
         .collect(Collectors.toList());
     }
+
+    public List<BookingDTO> getUserBookings(Integer userId) {
+        // 1. Recuperiamo tutte le entità Booking associate a quell'User ID
+        // Assicurati che il tuo BookingRepository abbia il metodo findByUserId
+        List<Booking> entityList = bookingRepository.findByUserId(userId);
+
+        // 2. Trasformiamo la lista di Entity in una lista di DTO usando il mapper
+        return entityList.stream()
+                        .map(bookingMapper::toDTO)
+                        .toList();
+    }
 }
