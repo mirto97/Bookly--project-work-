@@ -28,14 +28,13 @@ public class ActivityService
     // completo dal DB prima di salvare l'Activity (JPA richiede l'entity, non solo l'id).
     private final UserRepository userRepository;
 
-    public List<ActivityDTO> getAllActivities() 
+    public ActivityDTO getActivityById(int id) 
     {
-        return activityRepository.findAll()
-                .stream()
-                .map(activityMapper::toDTO)
-                .collect(Collectors.toList());
+        Activity activity = activityRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Activity non trovata con id: " + id));
+        return activityMapper.toDTO(activity);
     }
-
+    
     public ActivityDTO getActivityByOwnerId(int ownerId) {
         Activity activity = (activityRepository.findFirstByOwner_Id(ownerId))
             .orElseThrow(() -> new EntityNotFoundException("Nessuna attività per owner id: " + ownerId));
