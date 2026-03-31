@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.generation.bookly.model.Activity;
 import com.generation.bookly.model.Diary;
 
 public interface DiaryRepository extends JpaRepository<Diary, Integer> 
@@ -16,4 +17,9 @@ public interface DiaryRepository extends JpaRepository<Diary, Integer>
     // indipendentemente dallo stato (AVAILABLE, NOTAVAILABLE, BOOKED), così il modale
     // può mostrare anche le chiusure giornaliere e permettere di eliminarle.
     List<Diary> findByActivityIdAndDate(Integer activityId, LocalDate date);
+
+    boolean existsByActivityAndDate(Activity activity, LocalDate date);
+    
+    // Opzionale: utile per cancellare slot vecchi
+    void deleteByActivityAndDate(Activity activity, LocalDate date);
 }

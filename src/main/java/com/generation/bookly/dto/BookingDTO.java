@@ -52,4 +52,7 @@ public class BookingDTO {
     private String note;
 
     private List<ReviewDTO> reviews;
+
+    private String nomeCliente; 
+    private String emailCliente;
 }
