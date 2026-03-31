@@ -157,6 +157,35 @@ public class UserAPI
         }
     }
 
+    // Corrisponde a: this.http.post(`${this.apiUrl}/${userId}/send-otp`, {})
+    @PostMapping("/{id}/send-otp")
+    public ResponseEntity<?> sendOtp(@PathVariable int id) {
+        try {
+            userService.generateAndSendOtp(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
+    // Corrisponde a: this.http.patch(`${this.apiUrl}/${id}/password-with-otp`, { otp, password })
+    @PatchMapping("/{id}/password-with-otp")
+    public ResponseEntity<?> verifyOtpAndChangePassword(@PathVariable int id, @RequestBody Map<String, String> request) {
+        try {
+            String otp = request.get("otp");
+            String newPassword = request.get("password");
+            
+            if (otp == null || newPassword == null) {
+                return ResponseEntity.badRequest().body("Dati mancanti (otp o password)");
+            }
+            
+            UserDTO updated = userService.verifyAndChangePassword(id, otp, newPassword);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
