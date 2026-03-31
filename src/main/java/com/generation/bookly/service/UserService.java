@@ -197,4 +197,9 @@ public class UserService
         user.setStatus(User.Status.valueOf(status.toUpperCase()));
         return userMapper.toDTO(userRepository.save(user));
     }
+
+    public UserDTO createAdmin(UserDTO userDTO) {
+        userDTO.setRole("ADMIN");
+        return createUser(userDTO);
+    }
 }
