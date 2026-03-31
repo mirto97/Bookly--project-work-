@@ -23,6 +23,29 @@ public class ReviewService
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
 
+    public List<ReviewDTO> getAll() {
+        return reviewRepository.findAll()
+                .stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public ReviewDTO updateStatus(int id, String status) {
+        // Controllo esistenza
+        reviewRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Review non trovata: " + id));
+
+        // Validazione e conversione dello status
+        Review.ReviewStatus newStatus;
+        try {
+            newStatus = Review.ReviewStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Status non valido: " + status);
+        }
+        updateReviewStatus(id, newStatus);
+        return getById(id);
+    }
+
     @Transactional
     public ReviewDTO postReview(ReviewDTO dto) 
     {
@@ -70,5 +93,34 @@ public class ReviewService
                 .stream()
                 .map(reviewMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<ReviewDTO> getReviewsByActivityId(Integer activityId) {
+        return reviewRepository.findByBooking_Service_Activity_Id(activityId)
+                .stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public ReviewDTO getById(int id) {
+        return reviewRepository.findById(id)
+                .map(reviewMapper::toDTO)
+                .orElse(null);
+    }
+
+    public List<ReviewDTO> getPendingReviews() {
+        return reviewRepository.findByStatus(Review.ReviewStatus.PENDING)
+                .stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ReviewDTO addReply(int reviewId, String replyText) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("Recensione non trovata"));
+        
+        review.setOwnerReply(replyText);
+        return reviewMapper.toDTO(reviewRepository.save(review));
     }
 }

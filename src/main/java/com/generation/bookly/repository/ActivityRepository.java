@@ -16,4 +16,5 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>
     // findFirst evita NonUniqueResultException. In produzione dovrebbe esserci
     // un vincolo UNIQUE su owner_id, ma per ora gestiamo lato query.
     Optional<Activity> findFirstByOwner_Id(Integer ownerId);
+    List<Activity> findByOwnerId(Integer ownerId);
 }

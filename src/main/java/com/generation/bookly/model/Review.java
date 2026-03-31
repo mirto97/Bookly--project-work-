@@ -1,5 +1,6 @@
 package com.generation.bookly.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -47,6 +48,9 @@ public class Review
     @Enumerated(EnumType.STRING)
     private ReviewStatus status = ReviewStatus.PENDING;
     public enum ReviewStatus { PENDING, APPROVED, REJECTED }
+
+    @Column(length = 1000)
+    private String ownerReply;
 
     private LocalDateTime createdAt;
 }

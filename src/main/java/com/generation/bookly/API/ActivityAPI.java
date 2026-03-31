@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/bookly/api/activities")
 @RequiredArgsConstructor
@@ -105,5 +106,5 @@ public class ActivityAPI
     {
         activityService.deleteActivityById(id);
         return ResponseEntity.noContent().build();
-    } 
+    }
 }

@@ -38,4 +38,6 @@ public class ReviewDTO
     // dalla configurazione globale di Jackson — il frontend può fare new Date(createdAt)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+
+    private String ownerReply;
 }
