@@ -26,6 +26,19 @@ public class BookingService
     private final BookingMapper bookingMapper; // Il tuo mapper MapStruct
     private final EmailService emailService; // Il servizio per inviare email
 
+    public List<BookingDTO> findAllBookings() {
+        return bookingRepository.findAll()
+            .stream()
+            .map(bookingMapper::toDTO)
+            .collect(Collectors.toList());
+    }
+
+    public BookingDTO findBookingById(int id) {
+        Booking booking = bookingRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Prenotazione non trovata"));
+        return bookingMapper.toDTO(booking);
+    }
+
    @Transactional
     public BookingDTO createBooking(BookingDTO dto) {
         // 1. Recupero lo slot (qui abbiamo già data e ora!)
