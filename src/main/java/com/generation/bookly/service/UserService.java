@@ -140,4 +140,11 @@ public class UserService
         user.setPhotoUrl(photoUrl);
         return userMapper.toDTO(userRepository.save(user));
     }
+
+    public UserDTO updateStatus(int id, String status) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
+        user.setStatus(User.Status.valueOf(status.toUpperCase()));
+        return userMapper.toDTO(userRepository.save(user));
+    }
 }

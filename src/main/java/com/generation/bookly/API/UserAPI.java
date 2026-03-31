@@ -143,4 +143,20 @@ public class UserAPI
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable int id, @RequestBody Map<String, String> request) {
+        try {
+            String status = request.get("status");
+            if (status == null || status.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Status non valido");
+            }
+            return ResponseEntity.ok(userService.updateStatus(id, status));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
 }

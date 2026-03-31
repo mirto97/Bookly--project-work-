@@ -58,6 +58,10 @@ public class User implements UserDetails
     private Role role; // "GUEST" o "ADMIN"
     public enum Role { GUEST, ADMIN, OWNER }
 
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
+    public enum Status { ACTIVE, SUSPENDED, BANNED }
+
     @Column(name = "reportings_received")
     @Min(value = 0, message = "Reportings received cannot be negative")
     private int reportingsReceived = 0;

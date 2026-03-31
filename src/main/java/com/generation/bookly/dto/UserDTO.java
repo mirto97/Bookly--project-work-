@@ -41,6 +41,10 @@ public class UserDTO
     @NotNull(message = "Role is required")
     private String role;
 
+    @NotNull(message = "Status is required")
+    private String status;
+
+
     @Min(value = 0, message = "Reportings received cannot be negative")
     private int reportingsReceived;
 
