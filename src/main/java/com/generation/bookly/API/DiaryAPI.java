@@ -87,5 +87,21 @@ public class DiaryAPI
         return ResponseEntity.noContent().build();
     }
 
+    // Endpoint per la generazione massiva
+    @PostMapping("/generate/{activityId}")
+    public ResponseEntity<String> generateMassiveSlots(
+            @PathVariable Integer activityId,
+            @RequestParam(defaultValue = "30") int days,      // Default 30 giorni
+            @RequestParam(defaultValue = "60") int duration   // Default 60 minuti
+    ) {
+        try {
+            diaryService.generateSlotsForActivity(activityId, days, duration);
+            return ResponseEntity.ok("Generazione completata con successo per i prossimi " + days + " giorni.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).body("Attività non trovata.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Errore durante la generazione: " + e.getMessage());
+        }
+    }
 
 }
