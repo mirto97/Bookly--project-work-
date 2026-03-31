@@ -53,6 +53,7 @@ public class Booking
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.PENDING;
     public enum BookingStatus { PENDING, CONFIRMED, CANCELLED, COMPLETED }
+    // CONFIRMED non lo usiamo più ma lo lascio per eventuali estensioni future
 
     @NotNull(message = "Booking date is required")
     private LocalDate bookingDate = LocalDate.now();

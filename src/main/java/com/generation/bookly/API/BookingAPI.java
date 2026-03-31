@@ -55,7 +55,7 @@ public class BookingAPI {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<BookingDTO> updateStatusById(@PathVariable int id, @RequestBody Booking.BookingStatus status) {
+    public ResponseEntity<BookingDTO> updateStatusById(@PathVariable int id, @RequestParam Booking.BookingStatus status) {
         return ResponseEntity.ok(bookingService.updateBookingStatusById(id, status));
     }
 

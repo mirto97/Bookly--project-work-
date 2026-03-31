@@ -28,6 +28,11 @@ public class ActivityService
     // completo dal DB prima di salvare l'Activity (JPA richiede l'entity, non solo l'id).
     private final UserRepository userRepository;
 
+    public List<Activity> findAll() 
+    {
+        return activityRepository.findAll();
+    }
+
     public ActivityDTO getActivityById(int id) 
     {
         Activity activity = activityRepository.findById(id)

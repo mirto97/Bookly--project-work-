@@ -25,6 +25,15 @@ public class ActivityAPI
     private final ActivityService activityService;
     private final ActivityMapper activityMapper;
 
+    @GetMapping
+    public ResponseEntity<List<ActivityDTO>> findAll() 
+    {
+        List<ActivityDTO> activities = activityService.findAll().stream()
+            .map(activityMapper::toDTO)
+            .toList();
+        return ResponseEntity.ok(activities);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id)
     {
