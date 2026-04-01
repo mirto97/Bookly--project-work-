@@ -11,6 +11,5 @@ public interface UserRepository extends JpaRepository<User, Integer>
 {
     Optional<User> findByEmail(String email);
     // Per il filtro per status (attivo, bannato, etc.)
-    Optional<User> findByStatus(User.Status status);
-    List<User> findByStatus(String status);
+    List<User> findByStatus(User.Status status);
 }

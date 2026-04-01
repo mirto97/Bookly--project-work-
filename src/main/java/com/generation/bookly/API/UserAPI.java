@@ -2,10 +2,13 @@ package com.generation.bookly.API;
 
 import com.generation.bookly.dto.ReportingDTO;
 import com.generation.bookly.dto.UserDTO;
+import com.generation.bookly.model.User;
 import com.generation.bookly.service.ReportingService;
 import com.generation.bookly.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.mapstruct.control.MappingControl.Use;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -210,9 +213,7 @@ public class UserAPI
 
     @GetMapping("/banned")
     public ResponseEntity<List<UserDTO>> getBannedUsers() {
-        // Dobbiamo aggiungere questo metodo nel service
-        List<UserDTO> bannedUsers = userService.getUsersByStatus("BANNED");
-        return ResponseEntity.ok(bannedUsers);
+        return ResponseEntity.ok(userService.getUsersByStatus(User.Status.valueOf("BANNED")));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

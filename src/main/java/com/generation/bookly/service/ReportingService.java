@@ -107,6 +107,6 @@ public class ReportingService {
 
     public List<ReportingDTO> getReportsByReportedUserId(int userId) {
         // Assicurati che il ReportingRepository abbia questo metodo
-        return reportingMapper.toDTO(reportingRepository.findByReportedUserId(userId));
+        return reportingMapper.toDTO(reportingRepository.findByReportedUser_Id(userId));
     }
 }

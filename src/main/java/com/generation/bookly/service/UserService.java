@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -236,6 +237,29 @@ public class UserService
         user.setReportingsReceived(0);
 
         User saved = userRepository.save(user);
+        return userMapper.toDTO(saved);
+    }
+
+    public List<UserDTO> getUsersByStatus(User.Status status) {
+        return userRepository.findByStatus(status)
+            .stream()
+            .map(userMapper::toDTO)
+            .collect(Collectors.toList());
+    }
+
+    public UserDTO reactivateUser(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
+
+        // Riportiamo lo stato ad ACTIVE
+        user.setStatus(User.Status.ACTIVE);
+
+        // Azzeriamo il contatore dei report per dare una "seconda chance"
+        user.setReportingsReceived(0);
+
+        User saved = userRepository.save(user);
+        System.out.println("ADMIN ACTION: Utente " + user.getEmail() + " riattivato e report azzerati.");
+
         return userMapper.toDTO(saved);
     }
 }
