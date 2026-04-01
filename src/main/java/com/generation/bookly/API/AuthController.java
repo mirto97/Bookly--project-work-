@@ -27,9 +27,13 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequestDTO request) {
-        String token = authService.register(request);
-        return ResponseEntity.ok(new AuthenticationResponse(token));
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
+        try {
+            String token = authService.register(request);
+            return ResponseEntity.ok(new AuthenticationResponse(token));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     @PostMapping("/login")

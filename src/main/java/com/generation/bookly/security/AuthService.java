@@ -1,6 +1,6 @@
 package com.generation.bookly.security;
 
-import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +20,8 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
+    private static final Set<Role> PUBLIC_REGISTER_ALLOWED_ROLES = Set.of(Role.GUEST, Role.OWNER);
+
     public String register(RegisterRequestDTO request) {
         User user = new User();
         user.setFirstName(request.getFirstName());
@@ -27,14 +29,31 @@ public class AuthService {
         user.setDob(request.getDob());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword())); // Password HASHATA
-        if (request.getRole() != null) {
-            user.setRole(Role.valueOf(request.getRole().toUpperCase()));
-        }
+        user.setRole(parsePublicRole(request.getRole()));
         
         System.out.println("RUOLO DA SALVARE: " + user.getRole());
         userRepository.save(user);
         
         return jwtService.generateToken(user);
+    }
+
+    private Role parsePublicRole(String rawRole) {
+        if (rawRole == null || rawRole.trim().isEmpty()) {
+            throw new IllegalArgumentException("Role obbligatorio. Valori ammessi: [GUEST, OWNER]");
+        }
+
+        Role parsedRole;
+        try {
+            parsedRole = Role.valueOf(rawRole.trim().toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Role non valido: " + rawRole);
+        }
+
+        if (!PUBLIC_REGISTER_ALLOWED_ROLES.contains(parsedRole)) {
+            throw new IllegalArgumentException("Role non consentito. Valori ammessi: [GUEST, OWNER]");
+        }
+
+        return parsedRole;
     }
 
     public String authenticate(LoginRequestDTO request) {

@@ -61,12 +61,20 @@ public class UserService
     }
 
     public UserDTO createUser(UserDTO userDTO) {
+        User.Role parsedRole = parseRole(userDTO.getRole());
+        if (parsedRole != User.Role.GUEST && parsedRole != User.Role.OWNER) {
+            throw new IllegalArgumentException("Role non consentito. Valori ammessi: [GUEST, OWNER]");
+        }
+
+        userDTO.setRole(parsedRole.name());
+
         // Verifica esistenza email
         userRepository.findByEmail(userDTO.getEmail()).ifPresent(u -> {
             throw new IllegalArgumentException("Email già esistente");
         });
 
         User user = userMapper.toEntity(userDTO);
+        user.setRole(parsedRole);
         
         // --- AGGIUNGI QUESTA RIGA ---
         // Criptiamo la password prima di salvare l'entità
@@ -77,6 +85,18 @@ public class UserService
         user.setReportingsReceived(0);
         User saved = userRepository.save(user);
         return userMapper.toDTO(saved);
+    }
+
+    private User.Role parseRole(String rawRole) {
+        if (rawRole == null || rawRole.trim().isEmpty()) {
+            throw new IllegalArgumentException("Role obbligatorio");
+        }
+
+        try {
+            return User.Role.valueOf(rawRole.trim().toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Role non valido: " + rawRole);
+        }
     }
 
     public UserDTO updateUser(int id, UserDTO userDTO) {
@@ -199,7 +219,19 @@ public class UserService
     }
 
     public UserDTO createAdmin(UserDTO userDTO) {
-        userDTO.setRole("ADMIN");
-        return createUser(userDTO);
+        userDTO.setRole(User.Role.ADMIN.name());
+
+        // Verifica esistenza email
+        userRepository.findByEmail(userDTO.getEmail()).ifPresent(u -> {
+            throw new IllegalArgumentException("Email già esistente");
+        });
+
+        User user = userMapper.toEntity(userDTO);
+        user.setRole(User.Role.ADMIN);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setReportingsReceived(0);
+
+        User saved = userRepository.save(user);
+        return userMapper.toDTO(saved);
     }
 }
