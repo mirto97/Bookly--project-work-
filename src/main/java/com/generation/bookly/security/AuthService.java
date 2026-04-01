@@ -3,6 +3,8 @@ package com.generation.bookly.security;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,13 +63,14 @@ public class AuthService {
     }
 
     public String authenticate(LoginRequestDTO request) {
-        User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new RuntimeException("Utente non trovato"));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Password errata");
-        }
-
-        return jwtService.generateToken(user);
+    User user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new BadCredentialsException("Bad credentials"));
+    if (!user.isEnabled()) {
+        throw new DisabledException("Account disabled");
+    }
+    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        throw new BadCredentialsException("Bad credentials");
+    }
+    return jwtService.generateToken(user);
     }
 }

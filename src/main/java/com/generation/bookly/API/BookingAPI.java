@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,23 +40,27 @@ public class BookingAPI {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#userId, authentication)")
     public ResponseEntity<List<BookingDTO>> getByUser(@PathVariable int userId) {
         return ResponseEntity.ok(bookingService.getUserBookings(userId));
     }
 
     // @Valid anche qui: l'update riceve un DTO completo, vogliamo validarlo allo stesso modo
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('OWNER')")   
     public ResponseEntity<BookingDTO> updateById(@PathVariable int id, @Valid @RequestBody BookingDTO dto) {
         return ResponseEntity.ok(bookingService.updateBookingById(id, dto));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('OWNER')")
     public ResponseEntity<Void> deleteById(@PathVariable int id) {
         bookingService.deleteBookingById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('OWNER')")
     public ResponseEntity<BookingDTO> updateStatusById(@PathVariable int id, @RequestParam Booking.BookingStatus status) {
         return ResponseEntity.ok(bookingService.updateBookingStatusById(id, status));
     }

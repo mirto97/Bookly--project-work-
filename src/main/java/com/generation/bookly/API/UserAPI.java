@@ -64,6 +64,7 @@ public class UserAPI
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody UserDTO userDTO) {
         try {
             return ResponseEntity.ok(userService.updateUser(id, userDTO));
@@ -77,6 +78,7 @@ public class UserAPI
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         try {
             userService.deleteUser(id);
@@ -88,6 +90,7 @@ public class UserAPI
 
     // Endpoint per l'admin per vedere quanti report ha un utente
     @PatchMapping("/{id}/increment-reports")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<UserDTO> reportUser(@PathVariable int id) {
         try {
             return ResponseEntity.ok(userService.incrementReports(id));
@@ -97,6 +100,7 @@ public class UserAPI
     }
 
     @PatchMapping("/{id}/email")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<?> updateEmail(@PathVariable int id, @RequestBody Map<String, String> request) {
         try {
             String newEmail = request.get("email");
@@ -112,6 +116,7 @@ public class UserAPI
     }
 
     @PatchMapping("/{id}/password")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<?> updatePassword(@PathVariable int id, @RequestBody Map<String, String> request) {
         try {
             String newPassword = request.get("password");
@@ -128,6 +133,7 @@ public class UserAPI
     // Usiamo Map<String, String> invece di un DTO dedicato perché il body è un singolo campo:
     // { "bio": "..." } — coerente con il pattern già usato per email e password.
     @PatchMapping("/{id}/bio")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<?> updateBio(@PathVariable int id, @RequestBody Map<String, String> request) {
         try {
             String bio = request.get("bio");
@@ -142,6 +148,7 @@ public class UserAPI
 
     // Endpoint PATCH per aggiornare solo la foto profilo dell'utente (via URL).
     @PatchMapping("/{id}/photo")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<?> updatePhoto(@PathVariable int id, @RequestBody Map<String, String> request) {
         try {
             String photoUrl = request.get("photoUrl");
@@ -155,6 +162,7 @@ public class UserAPI
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<?> updateStatus(@PathVariable int id, @RequestBody Map<String, String> request) {
         try {
             String status = request.get("status");
@@ -169,6 +177,7 @@ public class UserAPI
 
     // Corrisponde a: this.http.post(`${this.apiUrl}/${userId}/send-otp`, {})
     @PostMapping("/{id}/send-otp")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
     public ResponseEntity<?> sendOtp(@PathVariable int id) {
         try {
             userService.generateAndSendOtp(id);

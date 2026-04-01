@@ -31,7 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         
         final String authHeader = request.getHeader("Authorization");
-        System.out.println("DEBUG - Header presente: " + (authHeader != null));
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
@@ -43,7 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("DEBUG - Nessun token valido, procedo come anonimo.");
             filterChain.doFilter(request, response);
             return;
         }
@@ -51,24 +49,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             final String jwt = authHeader.substring(7);
             final String userEmail = jwtService.extractUsername(jwt);
-            System.out.println("DEBUG - Email estratta dal token: " + userEmail);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             	UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            	System.out.println("DEBUG - Email dal token: '" + userEmail + "'");
-            	System.out.println("DEBUG - Username da UserDetails: '" + userDetails.getUsername() + "'");
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    System.out.println("DEBUG - Autenticazione impostata con successo!");
-                } else {
-                    System.out.println("DEBUG - Token non valido per l'utente.");
                 }
             }
         } catch (Exception e) {
-            System.out.println("DEBUG - Errore critico nel parsing JWT: " + e.getMessage());
             e.printStackTrace();
         }
         filterChain.doFilter(request, response);

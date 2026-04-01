@@ -36,6 +36,7 @@ public class JwtService {
 
         extraClaims.put("firstName", user.getFirstName());
         extraClaims.put("lastName", user.getLastName());
+        extraClaims.put("email", user.getEmail());
 
         return Jwts.builder()
                 .setClaims(extraClaims)
