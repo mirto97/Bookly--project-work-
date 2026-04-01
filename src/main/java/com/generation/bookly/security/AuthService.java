@@ -23,6 +23,10 @@ public class AuthService {
     private static final Set<Role> PUBLIC_REGISTER_ALLOWED_ROLES = Set.of(Role.GUEST, Role.OWNER);
 
     public String register(RegisterRequestDTO request) {
+        userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
+            throw new IllegalArgumentException("Email già esistente");
+        });
+
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());

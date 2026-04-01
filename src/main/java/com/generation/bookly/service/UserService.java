@@ -103,12 +103,16 @@ public class UserService
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
 
+        User.Role requestedRole = parseRole(userDTO.getRole());
+        if (requestedRole != existingUser.getRole()) {
+            throw new IllegalArgumentException("Il ruolo non puo essere modificato da questo endpoint");
+        }
+
         existingUser.setFirstName(userDTO.getFirstName());
         existingUser.setLastName(userDTO.getLastName());
         existingUser.setDob(userDTO.getDob());
         existingUser.setEmail(userDTO.getEmail());
         //existingUser.setPassword(userDTO.getPassword());
-        existingUser.setRole(User.Role.valueOf(userDTO.getRole()));
         existingUser.setReportingsReceived(userDTO.getReportingsReceived());
 
         User saved = userRepository.save(existingUser);

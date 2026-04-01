@@ -66,6 +66,8 @@ public class UserAPI
             return ResponseEntity.ok(userService.updateUser(id, userDTO));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Errore aggiornamento utente");
         }
