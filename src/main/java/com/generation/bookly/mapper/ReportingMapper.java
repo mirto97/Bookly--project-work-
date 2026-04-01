@@ -21,6 +21,7 @@ public interface ReportingMapper
     // Da DTO a Entity
     @Mapping(source = "authorId", target = "author.id")
     @Mapping(source = "bookingId", target = "booking.id") // AGGIUNTO
+    @Mapping(source = "reportedUserId", target = "reportedUser.id") // AGGIUNTO
     Reporting toEntity(ReportingDTO reportingDTO);
     
     List<Reporting> toEntity(List<ReportingDTO> reportingDTOs);

@@ -37,7 +37,7 @@ public class UserService
         // Logica ban automatico se superano i 5 report
         if(user.getReportingsReceived() >= 5) 
         {
-            // Qui potresti disabilitare l'account o loggare l'evento
+            user.setStatus(User.Status.BANNED);
         }
         
         return userMapper.toDTO(userRepository.save(user));
@@ -201,5 +201,26 @@ public class UserService
     public UserDTO createAdmin(UserDTO userDTO) {
         userDTO.setRole("ADMIN");
         return createUser(userDTO);
+    }
+
+    public UserDTO reactivateUser(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utente con id " + id + " non trovato"));
+
+        // Riportiamo lo stato ad ACTIVE
+        user.setStatus(User.Status.ACTIVE);
+        
+        // Azzeriamo il contatore dei report per dare una "seconda chance"
+        user.setReportingsReceived(0);
+
+        User saved = userRepository.save(user);
+        System.out.println("ADMIN ACTION: Utente " + user.getEmail() + " riattivato e report azzerati.");
+        
+        return userMapper.toDTO(saved);
+    }
+
+    public List<UserDTO> getUsersByStatus(String status) {
+        // Supponendo che il tuo repository abbia findByStatus
+        return userMapper.toDTO(userRepository.findByStatus(User.Status.valueOf(status.toUpperCase())));
     }
 }

@@ -1,7 +1,12 @@
 package com.generation.bookly.API;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,8 +38,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody LoginRequestDTO request) {
-        String token = authService.authenticate(request);
-        return ResponseEntity.ok(new AuthenticationResponse(token));
+    public ResponseEntity<?> authenticate(@RequestBody LoginRequestDTO request) {
+        try {
+            String token = authService.authenticate(request);
+            return ResponseEntity.ok(new AuthenticationResponse(token));
+        } catch (DisabledException e) {
+            // Questo scatta se isEnabled() nell'Entity User restituisce false
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Il tuo account è temporaneamente sospeso. Un amministratore sta revisionando le segnalazioni ricevute."));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "Email o password errati."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Errore durante l'autenticazione."));
+        }
     }
+
 }

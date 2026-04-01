@@ -1,6 +1,8 @@
 package com.generation.bookly.API;
 
+import com.generation.bookly.dto.ReportingDTO;
 import com.generation.bookly.dto.UserDTO;
+import com.generation.bookly.service.ReportingService;
 import com.generation.bookly.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ public class UserAPI
 {
 
     private final UserService userService;
+    private final ReportingService reportingService;
+
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -202,4 +206,25 @@ public class UserAPI
         }
     }
 
+    @GetMapping("/banned")
+    public ResponseEntity<List<UserDTO>> getBannedUsers() {
+        // Dobbiamo aggiungere questo metodo nel service
+        List<UserDTO> bannedUsers = userService.getUsersByStatus("BANNED");
+        return ResponseEntity.ok(bannedUsers);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/reactivate")
+    public ResponseEntity<UserDTO> reactivateUser(@PathVariable int id) {
+        // Usiamo il metodo che abbiamo scritto prima
+        UserDTO updatedUser = userService.reactivateUser(id);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/{id}/reportings")
+    public ResponseEntity<List<ReportingDTO>> getUserReportings(@PathVariable int id) {
+        // Dobbiamo recuperare tutti i report dove reported_user_id = id
+        List<ReportingDTO> reports = reportingService.getReportsByReportedUserId(id);
+        return ResponseEntity.ok(reports);
+    }
 }

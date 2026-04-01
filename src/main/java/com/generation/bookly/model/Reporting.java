@@ -36,6 +36,10 @@ public class Reporting
     @JoinColumn(name = "author_id")
     private User author;
 
+    @ManyToOne
+    @JoinColumn(name = "reported_user_id")
+    private User reportedUser;
+
     // AGGIUNTO: Relazione con il booking oggetto della segnalazione
     @ManyToOne
     @JoinColumn(name = "booking_id")

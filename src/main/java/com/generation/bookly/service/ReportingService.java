@@ -104,4 +104,9 @@ public class ReportingService {
         }
         reportingRepository.deleteById(id);
     }
+
+    public List<ReportingDTO> getReportsByReportedUserId(int userId) {
+        // Assicurati che il ReportingRepository abbia questo metodo
+        return reportingMapper.toDTO(reportingRepository.findByReportedUserId(userId));
+    }
 }
