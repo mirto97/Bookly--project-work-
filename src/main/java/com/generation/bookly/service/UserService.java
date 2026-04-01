@@ -37,7 +37,7 @@ public class UserService
         // Logica ban automatico se superano i 5 report
         if(user.getReportingsReceived() >= 5) 
         {
-            // Qui potresti disabilitare l'account o loggare l'evento
+            user.setStatus(User.Status.BANNED);
         }
         
         return userMapper.toDTO(userRepository.save(user));

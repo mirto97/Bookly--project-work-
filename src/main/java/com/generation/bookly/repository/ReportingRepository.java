@@ -12,4 +12,5 @@ public interface ReportingRepository extends JpaRepository<Reporting, Integer>
 
     // Controlla se esiste già un report per quel booking fatto da quell'owner
     boolean existsByBookingIdAndAuthorId(int bookingId, int authorId);
+    List<Reporting> findByReportedUser_Id(int userId);
 }
