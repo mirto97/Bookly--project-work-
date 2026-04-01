@@ -41,6 +41,22 @@ public class BookingService
 
    @Transactional
     public BookingDTO createBooking(BookingDTO dto) {
+        if (dto.getUserId() == null || dto.getUserId() == 0) {
+            throw new IllegalArgumentException("ID Utente non valido o mancante.");
+        }
+
+        // 0. Controllo limite prenotazioni attive per l'utente (Massimo 5)
+        // Usiamo i metodi del repository per contare in modo più efficiente
+        int pendingCount = bookingRepository.findByUserIdAndStatus(dto.getUserId(), Booking.BookingStatus.PENDING).size();
+        int confirmedCount = bookingRepository.findByUserIdAndStatus(dto.getUserId(), Booking.BookingStatus.CONFIRMED).size();
+        int activeCount = pendingCount + confirmedCount;
+
+        System.out.println("DEBUG: L'utente " + dto.getUserId() + " ha " + activeCount + " prenotazioni attive.");
+
+        if (activeCount >= 5) {
+            throw new IllegalStateException("L'utente ha già raggiunto il limite massimo di 5 prenotazioni attive.");
+        }
+
         // 1. Recupero lo slot (qui abbiamo già data e ora!)
         Diary diary = diaryRepository.findById(dto.getDiaryId())
             .orElseThrow(() -> new EntityNotFoundException("Slot non trovato"));
