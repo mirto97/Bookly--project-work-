@@ -1,6 +1,7 @@
 package com.generation.bookly.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +27,8 @@ public class ReportingDTO
     private String type;
 
     @NotNull(message = "Created date is required")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
+
+    private Integer reportedUserId;
+    private Integer bookingId;
 }

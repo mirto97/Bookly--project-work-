@@ -18,12 +18,6 @@ public class ReportingAPI
 
     private final ReportingService reportingService;
 
-    @PostMapping
-    public ResponseEntity<ReportingDTO> submitReport(@RequestBody ReportingDTO dto) 
-    {
-        return ResponseEntity.ok(reportingService.createReport(dto));
-    }
-
     // Endpoint per l'admin per risolvere/chiudere una segnalazione
     @PutMapping("/{id}/resolve")
     public ResponseEntity<Void> resolve(@PathVariable int id, @RequestParam String status) 
@@ -53,5 +47,19 @@ public class ReportingAPI
     public ResponseEntity<Void> delete(@PathVariable int id) {
         reportingService.deleteReport(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping
+        public ResponseEntity<?> submitReport(@RequestBody ReportingDTO dto) {
+        try {
+            ReportingDTO saved = reportingService.createReport(dto);
+            return ResponseEntity.ok(saved);
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("GIA_SEGNALATO")) {
+                // Restituiamo un 400 Bad Request con un messaggio leggibile
+                return ResponseEntity.badRequest().body("Hai già segnalato questo cliente per questa prenotazione.");
+            }
+            return ResponseEntity.status(500).body("Errore interno del server.");
+        }
     }
 }

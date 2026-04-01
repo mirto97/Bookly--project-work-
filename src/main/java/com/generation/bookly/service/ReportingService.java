@@ -9,6 +9,8 @@ import com.generation.bookly.dto.ReportingDTO;
 import com.generation.bookly.mapper.ReportingMapper;
 import com.generation.bookly.model.Reporting;
 import com.generation.bookly.repository.ReportingRepository;
+import com.generation.bookly.repository.UserRepository;
+import com.generation.bookly.model.User;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -21,13 +23,44 @@ public class ReportingService {
 
     private final ReportingRepository reportingRepository;
     private final ReportingMapper reportingMapper;
+    private final UserRepository userRepository;
+
 
     // CREATE
     public ReportingDTO createReport(ReportingDTO dto) {
+        System.out.println("DEBUG REPORT -> BookingID: " + dto.getBookingId() + " | AuthorID: " + dto.getAuthorId());
+        
+        boolean exists = reportingRepository.existsByBookingIdAndAuthorId(dto.getBookingId(), dto.getAuthorId());
+        System.out.println("DEBUG REPORT -> Esiste già? " + exists);
+
+        if (exists) {
+            throw new RuntimeException("GIA_SEGNALATO");
+        }
+        // 1. Controllo anti-spam/duplicati
+        if (reportingRepository.existsByBookingIdAndAuthorId(dto.getBookingId(), dto.getAuthorId())) {
+            throw new RuntimeException("Hai già inviato una segnalazione per questa prenotazione.");
+        }
+
+        // 2. Mappatura e salvataggio report
         Reporting reporting = reportingMapper.toEntity(dto);
         reporting.setStatus(Reporting.ReportingStatus.PENDING);
         reporting.setCreatedAt(LocalDateTime.now());
-        return reportingMapper.toDTO(reportingRepository.save(reporting));
+        Reporting saved = reportingRepository.save(reporting);
+
+        // 3. Incremento contatore e Ban (solo se il report è di tipo CLIENT)
+        if (dto.getReportedUserId() != null) {
+            userRepository.findById(dto.getReportedUserId()).ifPresent(guest -> {
+                int currentCount = guest.getReportingsReceived() + 1;
+                guest.setReportingsReceived(currentCount);
+                
+                if (currentCount >= 5) {
+                    guest.setStatus(User.Status.BANNED);
+                }
+                userRepository.save(guest);
+            });
+        }
+
+        return reportingMapper.toDTO(saved);
     }
 
     // READ ALL
