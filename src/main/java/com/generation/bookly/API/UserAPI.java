@@ -177,15 +177,15 @@ public class UserAPI
 
     // Corrisponde a: this.http.post(`${this.apiUrl}/${userId}/send-otp`, {})
     @PostMapping("/{id}/send-otp")
-    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#id, authentication)")
-    public ResponseEntity<?> sendOtp(@PathVariable int id) {
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isSelf(#userId, authentication)")
+    public ResponseEntity<?> sendOtp(@PathVariable("id") int userId) {
         try {
-            userService.generateAndSendOtp(id);
+            userService.generateAndSendOtp(userId);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    } 
 
     // Corrisponde a: this.http.patch(`${this.apiUrl}/${id}/password-with-otp`, { otp, password })
     @PatchMapping("/{id}/password-with-otp")
