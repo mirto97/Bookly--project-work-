@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 //gabri
 @RestController
@@ -47,22 +49,47 @@ public class BookingAPI {
 
     // @Valid anche qui: l'update riceve un DTO completo, vogliamo validarlo allo stesso modo
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('OWNER')")   
+    @PreAuthorize("hasRole('ADMIN') or @bookingSecurity.isBookingOwner(#id, authentication) or @bookingSecurity.isOwnerOfBookingActivity(#id, authentication)")
     public ResponseEntity<BookingDTO> updateById(@PathVariable int id, @Valid @RequestBody BookingDTO dto) {
         return ResponseEntity.ok(bookingService.updateBookingById(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('OWNER')")
+    @PreAuthorize("hasRole('ADMIN') or @bookingSecurity.isBookingOwner(#id, authentication) or @bookingSecurity.isOwnerOfBookingActivity(#id, authentication)")
     public ResponseEntity<Void> deleteById(@PathVariable int id) {
         bookingService.deleteBookingById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('OWNER')")
-    public ResponseEntity<BookingDTO> updateStatusById(@PathVariable int id, @RequestParam Booking.BookingStatus status) {
-        return ResponseEntity.ok(bookingService.updateBookingStatusById(id, status));
+    @PreAuthorize("hasRole('ADMIN') or @bookingSecurity.isOwnerOfBookingActivity(#id, authentication)")
+    public ResponseEntity<BookingDTO> updateStatusById(
+            @PathVariable int id,
+            @RequestParam(required = false) Booking.BookingStatus status,
+            @RequestBody(required = false) Map<String, String> body
+    ) {
+        Booking.BookingStatus resolvedStatus = status;
+
+        // Compatibilita frontend: accetta sia query param (?status=...) sia body JSON { "status": "..." }.
+        if (resolvedStatus == null && body != null) {
+            String rawStatus = body.get("status");
+            if (rawStatus != null && !rawStatus.isBlank()) {
+                try {
+                    resolvedStatus = Booking.BookingStatus.valueOf(rawStatus.trim().toUpperCase());
+                } catch (IllegalArgumentException ex) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status non valido: " + rawStatus);
+                }
+            }
+        }
+
+        if (resolvedStatus == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Status mancante. Usa query param ?status=... oppure body {\"status\":\"...\"}."
+            );
+        }
+
+        return ResponseEntity.ok(bookingService.updateBookingStatusById(id, resolvedStatus));
     }
 
     @GetMapping("/activity/{activityId}")

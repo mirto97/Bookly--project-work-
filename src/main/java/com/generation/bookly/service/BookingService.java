@@ -8,8 +8,11 @@ import com.generation.bookly.dto.BookingDTO;
 import com.generation.bookly.mapper.BookingMapper;
 import com.generation.bookly.model.Booking;
 import com.generation.bookly.model.Diary;
+import com.generation.bookly.model.User;
 import com.generation.bookly.repository.BookingRepository;
 import com.generation.bookly.repository.DiaryRepository;
+import com.generation.bookly.repository.ServiceRepository;
+import com.generation.bookly.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -23,6 +26,8 @@ public class BookingService
 
     private final BookingRepository bookingRepository;
     private final DiaryRepository diaryRepository;
+    private final ServiceRepository serviceRepository;
+    private final UserRepository userRepository;
     private final BookingMapper bookingMapper; // Il tuo mapper MapStruct
     private final EmailService emailService; // Il servizio per inviare email
 
@@ -96,22 +101,53 @@ public class BookingService
         return bookingMapper.toDTO(saved);
     }
 
+    @Transactional
     public BookingDTO updateBookingById(int id, BookingDTO dto) {
-        // Verifichiamo che la prenotazione esista prima di aggiornarla
-        bookingRepository.findById(id)
+        Booking booking = bookingRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Prenotazione non trovata"));
 
-        // ERRORE PRECEDENTE: si chiamava booking.setUserId() e booking.setDiaryId()
-        // ma Booking NON ha campi "userId" o "diaryId" diretti!
-        // Ha relazioni @ManyToOne: "private User user" e "private Diary diary".
-        // Quindi i setter corretti sarebbero setUser(User) e setDiary(Diary),
-        // che richiederebbero di caricare le entità dal DB.
-        //
-        // SOLUZIONE PIÙ PULITA: usiamo il mapper per ricostruire l'entity dal DTO.
-        // Il mapper sa già come trasformare userId → user.id, diaryId → diary.id, ecc.
-        // Impostiamo l'ID manualmente per fare un UPDATE invece di un INSERT.
-        Booking booking = bookingMapper.toEntity(dto);
-        booking.setId(id); // senza setId(), JPA farebbe un INSERT invece di UPDATE
+        if (dto.getDiaryId() == null) {
+            throw new IllegalArgumentException("Diary ID obbligatorio");
+        }
+
+        Diary oldDiary = booking.getDiary();
+        Diary newDiary = diaryRepository.findById(dto.getDiaryId())
+            .orElseThrow(() -> new EntityNotFoundException("Slot non trovato"));
+
+        boolean diaryChanged = oldDiary == null || oldDiary.getId() != newDiary.getId();
+        if (diaryChanged) {
+            if (newDiary.getAvailable() != Diary.Available.AVAILABLE) {
+                throw new IllegalStateException("Lo slot selezionato non è disponibile");
+            }
+
+            if (oldDiary != null) {
+                oldDiary.setAvailable(Diary.Available.AVAILABLE);
+                diaryRepository.save(oldDiary);
+            }
+
+            newDiary.setAvailable(Diary.Available.BOOKED);
+            diaryRepository.save(newDiary);
+            booking.setDiary(newDiary);
+        }
+
+        if (dto.getServiceId() != null) {
+            com.generation.bookly.model.Service service = serviceRepository.findById(dto.getServiceId())
+                .orElseThrow(() -> new EntityNotFoundException("Servizio non trovato"));
+            booking.setService(service);
+        }
+
+        if (dto.getUserId() != null) {
+            User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("Utente non trovato"));
+            booking.setUser(user);
+        }
+
+        if (dto.getStatus() != null) {
+            booking.setStatus(dto.getStatus());
+        }
+
+        booking.setNote(dto.getNote());
+        booking.setBookingDate(newDiary.getDate());
 
         Booking updated = bookingRepository.save(booking);
         return bookingMapper.toDTO(updated);
